@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>John Frixx T. Balmes</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        brand: { DEFAULT: '#1E40AF', light: '#3B82F6', dark: '#1E3A8A' },
+        ink: '#0B1220',
+        'ink-light': '#4B5563',
+        'ink-muted': '#6B7280',
+        vellum: '#FAFAFA',
+        parchment: '#F3F4F6',
+      },
+      fontFamily: { sans: ['Inter', 'sans-serif'] },
+      borderRadius: { DEFAULT: '0px', md: '0px', lg: '0px', xl: '0px', '2xl': '0px', '3xl': '0px', full: '0px' },
+      letterSpacing: { widest: '.15em', mega: '.25em' },
+    }
+  }
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  .hairline { border-color: #E5E7EB; }
+  .hairline-dark { border-color: #D1D5DB; }
+
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s cubic-bezier(.2,.8,.2,1), transform .7s cubic-bezier(.2,.8,.2,1); }
+  .reveal.active { opacity: 1; transform: translateY(0); }
+
+  .live-dot { position: relative; display: inline-flex; width: 10px; height: 10px; }
+  .live-dot::before { content:''; position:absolute; inset:0; background:#22C55E; border-radius:9999px; opacity:.55; animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
+  .live-dot::after { content:''; position:relative; display:inline-flex; width:10px; height:10px; background:#22C55E; border-radius:9999px; }
+  @keyframes ping { 0% { transform: scale(1); opacity:.55 } 75%,100% { transform: scale(2.2); opacity:0 } }
+
+  .swipe-wrap { position: relative; }
+  .swipe-wrap::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 48px; background: linear-gradient(to right, transparent, rgba(250,250,250,1)); pointer-events: none; }
+  .swipe-wrap.on-white::after { background: linear-gradient(to right, transparent, #FFFFFF); }
+  .swipe-wrap.on-parchment::after { background: linear-gradient(to right, transparent, #F3F4F6); }
+
+  .swipe-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; -ms-overflow-style: none; }
+  .swipe-track::-webkit-scrollbar { display: none; }
+  .swipe-card { scroll-snap-align: start; flex: 0 0 88%; }
+  @media (min-width: 768px) { .swipe-card { flex: 0 0 46%; } }
+  @media (min-width: 1280px) { .swipe-card { flex: 0 0 32%; } }
+
+  .swipe-progress-track { height: 2px; background: #E5E7EB; position: relative; overflow: hidden; }
+  .swipe-progress-bar { position: absolute; inset: 0 auto 0 0; width: 20%; background: #1E40AF; transition: width .15s linear; }
+
+  .chat-bubble-member { background:#F3F4F6; color:#0B1220; border:1px solid #D1D5DB; }
+  .chat-bubble-rep { background:#1E40AF; color:#FFF; }
+
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: #F9FAFB; }
+  ::-webkit-scrollbar-thumb { background: #D1D5DB; }
+
+  .form-input { width:100%; padding:1rem; background:#FFF; border:1px solid #D1D5DB; color:#0B1220; transition: border-color .3s; font-size: 15px; }
+  .form-input:focus { outline:none; border-color:#1E40AF; box-shadow: inset 0 0 0 1px #1E40AF; }
+  .form-input::placeholder { color: #9CA3AF; }
+
+  .report-tab { transition: all .25s ease; cursor: pointer; }
+  .report-tab[aria-selected="true"] { background:#0B1220; color:#FFF; border-color:#0B1220; }
+  .report-tab[aria-selected="true"] .tab-num { color:#93C5FD; }
+  .report-tab[aria-selected="true"] .tab-title { color:#FFF; }
+  .report-tab:not([aria-selected="true"]):hover { border-color:#1E40AF; background:#FAFAFA; }
+
+  .section-label { display:inline-flex; align-items:center; gap:.75rem; font-size:10px; font-weight:700; letter-spacing:.25em; text-transform:uppercase; color:#1E40AF; }
+  .section-label::before { content:''; width:28px; height:2px; background:#1E40AF; }
+</style>
+</head>
+
+<body class="bg-vellum text-ink-light antialiased selection:bg-brand selection:text-white">
+
+<!-- ============================================== NAV ============================================== -->
+<nav class="fixed w-full z-50 bg-vellum/95 backdrop-blur-sm border-b hairline transition-shadow duration-300" id="navbar">
+  <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
+    <div class="flex justify-between items-center h-20">
+      <a href="#home" class="flex items-center gap-3 group">
+        <span class="font-bold text-base text-ink tracking-tight">John Frixx T. Balmes</span>
+        <span class="hidden sm:inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-ink-muted border-l hairline-dark pl-3">
+          <span class="live-dot"></span> Available
+        </span>
+      </a>
+
+      <div class="hidden lg:flex items-center space-x-8 h-full">
+        <a href="#about" class="text-[11px] font-bold tracking-widest uppercase text-ink-light hover:text-brand transition-colors h-full flex items-center border-b-2 border-transparent hover:border-brand">About</a>
+        <a href="#capabilities" class="text-[11px] font-bold tracking-widest uppercase text-ink-light hover:text-brand transition-colors h-full flex items-center border-b-2 border-transparent hover:border-brand">Capability</a>
+        <a href="#engagements" class="text-[11px] font-bold tracking-widest uppercase text-ink-light hover:text-brand transition-colors h-full flex items-center border-b-2 border-transparent hover:border-brand">Engagements</a>
+        <a href="#impact" class="text-[11px] font-bold tracking-widest uppercase text-ink-light hover:text-brand transition-colors h-full flex items-center border-b-2 border-transparent hover:border-brand">Impact</a>
+        <a href="#reports" class="text-[11px] font-bold tracking-widest uppercase text-ink-light hover:text-brand transition-colors h-full flex items-center border-b-2 border-transparent hover:border-brand">Field Reports</a>
+        <a href="#contact" class="text-[11px] font-bold tracking-widest uppercase text-white bg-brand hover:bg-brand-dark transition-colors px-5 py-2.5">Contact</a>
+      </div>
+
+      <button id="mobile-menu-btn" class="lg:hidden text-ink hover:text-brand p-2" aria-label="Menu">
+        <i class="fa-solid fa-bars text-xl"></i>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="hidden lg:hidden bg-vellum border-t hairline absolute w-full">
+    <div class="px-6 py-4 space-y-1">
+      <a href="#about" class="block py-3 text-xs font-bold tracking-widest uppercase text-ink hover:text-brand border-b hairline">About</a>
+      <a href="#capabilities" class="block py-3 text-xs font-bold tracking-widest uppercase text-ink hover:text-brand border-b hairline">Capability</a>
+      <a href="#engagements" class="block py-3 text-xs font-bold tracking-widest uppercase text-ink hover:text-brand border-b hairline">Engagements</a>
+      <a href="#impact" class="block py-3 text-xs font-bold tracking-widest uppercase text-ink hover:text-brand border-b hairline">Impact</a>
+      <a href="#reports" class="block py-3 text-xs font-bold tracking-widest uppercase text-ink hover:text-brand border-b hairline">Field Reports</a>
+      <a href="#contact" class="block py-3 text-xs font-bold tracking-widest uppercase text-brand">Brief</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================== HERO ============================================== -->
+<section id="home" class="pt-32 pb-16 lg:pt-40 lg:pb-20">
+  <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
+    <div class="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+
+      <div class="lg:col-span-7 reveal">
+        <div class="inline-flex items-center gap-3 mb-8">
+          <span class="text-[10px] font-bold tracking-mega text-ink-muted uppercase">PORTFOLIO & OPERATIONAL PROFILE</span>
+        </div>
+
+        <h1 class="text-5xl sm:text-6xl lg:text-[5.25rem] font-black text-ink leading-[1.02] tracking-tighter mb-8">
+          Efficient Operations,<br>
+          <span class="text-brand">Reliable Results.</span>
+        </h1>
+
+        <p class="text-xl lg:text-2xl text-ink-light mb-10 max-w-2xl leading-relaxed font-light">
+          Experienced Subject Matter Expert (SME) with a background in high-touch B2B customer retention, sales operations, financial services compliance, and healthcare customer advocacy. Four years. Five industries. Zero dropped balls.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 mb-12">
+          <a href="#engagements" class="inline-flex justify-center items-center px-8 py-4 text-xs font-bold tracking-widest uppercase text-white bg-brand hover:bg-brand-dark transition-colors">
+            View my Experience <i class="fa-solid fa-arrow-right ml-3 text-[10px]"></i>
+          </a>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-x-8 gap-y-3 text-[11px] font-bold uppercase tracking-widest text-ink-muted border-t hairline-dark pt-6">
+          <span class="flex items-center gap-2"><i class="fa-solid fa-check text-brand text-[10px]"></i>4+ Years</span>
+          <span class="flex items-center gap-2"><i class="fa-solid fa-check text-brand text-[10px]"></i>5 Industries</span>
+          <span class="flex items-center gap-2"><i class="fa-solid fa-check text-brand text-[10px]"></i>SME-Trained</span>
+          <span class="flex items-center gap-2"><i class="fa-solid fa-check text-brand text-[10px]"></i>B2B & B2C</span>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5 reveal delay-100">
+        <div class="bg-white border border-ink/15">
+          <div class="relative w-full aspect-[4/3] overflow-hidden bg-parchment border-b border-ink/15">
+            <img src="balmes.png" alt="John Frxn T. Balmes" class="w-full h-full object-cover object-[center_20%]">
+            <div class="absolute top-4 left-4 inline-flex items-center gap-2 bg-ink text-white px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest">
+              <span class="live-dot"></span> Live Status
+            </div>
+          </div>
+
+          <div class="p-6 space-y-5">
+            <div>
+              <p class="text-[9px] font-bold text-ink-muted uppercase tracking-widest mb-1">Verified Professional</p>
+              <p class="text-lg font-bold text-ink tracking-tight">John Frixx T. Balmes</p>
+              <p class="text-[10px] font-bold text-brand uppercase tracking-widest mt-1">Current Role: Subject Matter Expert</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-x-4 gap-y-4 border-t hairline pt-5">
+              <div>
+                <p class="text-[9px] font-bold text-ink-muted uppercase tracking-widest mb-1">Local Time · PHT</p>
+                <p id="pht-clock" class="text-sm font-bold text-ink tabular-nums">—</p>
+              </div>
+              <div>
+                <p class="text-[9px] font-bold text-ink-muted uppercase tracking-widest mb-1">Response Window</p>
+                <p class="text-sm font-bold text-ink">&lt; 4 business hrs</p>
+              </div>
+              <div>
+                <p class="text-[9px] font-bold text-ink-muted uppercase tracking-widest mb-1">Current Focus</p>
+                <p class="text-sm font-bold text-ink">Accepting Q1 briefings</p>
+              </div>
+              <div>
+                <p class="text-[9px] font-bold text-ink-muted uppercase tracking-widest mb-1">Last Verified</p>
+                <p id="last-verified" class="text-sm font-bold text-ink">—</p>
+              </div>
+            </div>
+
+            <div class="bg-parchment border border-ink/10 p-3 flex items-start gap-3">
+              <i class="fa-solid fa-circle-info text-brand text-xs mt-0.5"></i>
+              <p class="text-[11px] text-ink-light font-light leading-relaxed">Open to full-time opportunities and process-improvement consulting.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================== PROOF STRIP ============================================== -->
+<section class="py-10 border-y hairline bg-white">
+  <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
+    <div class="flex items-center justify-between mb-4">
+    </div>
+
+    <div class="swipe-wrap on-white">
+      <!-- Added ID here for the auto-carousel JS -->
+      <div class="swipe-track" data-swipe id="proof-track">
+        <div class="swipe-card pr-6 border-r hairline">
+          <p class="text-4xl font-black text-ink tracking-tighter">99.98%</p>
+          <p class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mt-2">Member CSAT · Teleperformance</p>
+        </div>
+        <div class="swipe-card px-6 border-r hairline">
+          <p class="text-4xl font-black text-ink tracking-tighter">1 of 80</p>
+          <p class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mt-2">Top performer · Two consecutive months</p>
+        </div>
+        <div class="swipe-card px-6 border-r hairline">
+          <p class="text-4xl font-black text-ink tracking-tighter">95%</p>
+          <p class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mt-2">Quality score · Sustained quarter</p>
+        </div>
+        <div class="swipe-card px-6 border-r hairline">
+          <p class="text-4xl font-black text-ink tracking-tighter">$50</p>
+          <p class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mt-2">Risk Champion award · Q1 2025</p>
+        </div>
+        <div class="swipe-card px-6 border-r hairline">
+          <p class="text-4xl font-black text-ink tracking-tighter">25%</p>
+          <p class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mt-2">Save rate · Above benchmark · TSD Global</p>
+        </div>
+        <div class="swipe-card px-6">
+          <p class="text-4xl font-black text-ink tracking-tighter">98%</p>
+          <p class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mt-2">Fraud claim accuracy · Foundever</p>
+        </div>
+      </div>
+    </div>
+    <div class="swipe-progress-track mt-6">
+      <div class="swipe-progress-bar" data-progress-for="proof-track"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================== ABOUT ============================================== -->
+<section id="about" class="py-24 border-b hairline bg-vellum">
+  <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
+    <div class="grid lg:grid-cols-12 gap-12">
+      <div class="lg:col-span-4 reveal">
+        <span class="section-label">01 / Profile</span>
+        <h2 class="text-4xl lg:text-5xl font-black text-ink tracking-tighter mt-4 leading-[1.05]">About Me</h2>
+      </div>
+      <div class="lg:col-span-8 reveal delay-100">
+        <p class="text-xl text-ink-light font-light leading-relaxed mb-8">
+          I'm an operations-focused professional with 4 years of combined experience in customer support, back-office operations, and administrative processes. I specialize in handling complex concerns, streamlining workflows, and providing reliable operational support.
+        </p>
+        <p class="text-lg text-ink-light font-light leading-relaxed mb-10">
+          Through my experience as a Subject Matter Expert, I've also developed strengths in process guidance, problem-solving, and maintaining team performance and quality standards. I value accuracy, efficiency, and finding practical solutions that keep things moving.
+        </p>
+
+        <!-- NEW: Profile Card & What I Can Do -->
+        <div class="grid md:grid-cols-2 gap-8 border-t hairline-dark pt-8">
+          
+          <!-- Profile Card -->
+          <div class="bg-white border border-ink/15 p-6">
+            <div class="flex items-center gap-5 mb-6">
+              <div class="w-16 h-16 overflow-hidden border border-ink/20 shrink-0">
+                <img src="balmes.png" alt="John Frixx T. Balmes" class="w-full h-full object-cover">
+              </div>
+              <div>
+                <h4 class="text-lg font-black text-ink tracking-tight">John Frixx T. Balmes</h4>
+                <p class="text-sm text-ink-light font-medium mt-1">Operations & SME Specialist</p>
+              </div>
+            </div>
+            
+            <div class="bg-parchment p-5 border border-ink/10">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-bold text-ink">Performance Standard</span>
+                <span class="text-sm font-bold text-brand">Top Tier</span>
+              </div>
+              <!-- Progress Bar -->
+              <div class="h-1.5 w-full bg-gray-200 mb-4">
+                <div class="h-full bg-brand w-[95%]"></div>
+              </div>
+              <p class="text-[13px] text-ink-light font-light leading-relaxed">Focused on continuous accuracy, compliance, and team elevation.</p>
+            </div>
+          </div>
+
+          <!-- What I Can Do -->
+          <div class="bg-white border border-ink/15 p-6 flex flex-col justify-center">
+            <h4 class="text-[10px] font-bold text-ink-muted uppercase tracking-widest mb-5 border-b hairline pb-3">What I Can Do</h4>
+            <ul class="space-y-4 text-[13px] font-medium text-ink">
+              <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-brand text-sm"></i>Customer Service</li>
+              <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-brand text-sm"></i>Back-office Operations</li>
+              <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-brand text-sm"></i>Administrative</li>
+              <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-brand text-sm"></i>Subject Matter Expert (SME)</li>
+              <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-brand text-sm"></i>Sales</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================== CAPABILITIES ============================================== -->
+<section id="capabilities" class="py-24 border-b hairline bg-white">
+  <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
+    <div class="grid lg:grid-cols-12 gap-12 mb-16">
+      <div class="lg:col-span-4 reveal">
+        <span class="section-label">02 / Capability</span>
+        <h2 class="text-4xl lg:text-5xl font-black text-ink tracking-tighter mt-4 leading-[1.05]">Technical Proficiency</h2>
+      </div>
+      <div class="lg:col-span-8 reveal delay-100 flex items-end">
+        <p class="text-xl text-ink-light font-light max-w-2xl leading-relaxed">Software, platforms, and operational tools utilized across client operations, workflows, and communication.</p>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-px bg-ink/10 border border-ink/10">
+
+      <div class="bg-white p-10 reveal">
+        <div class="flex items-center gap-3 mb-8 border-b hairline pb-4">
+          <i class="fa-solid fa-headset text-brand"></i>
+          <h3 class="font-bold text-base text-ink tracking-tight">Call Center & Account Management</h3>
+        </div>
+        <ul class="space-y-4 text-sm text-ink-light font-light">
+          <li class="flex items-center gap-3"><i class="fa-solid fa-caret-right text-brand/60 text-xs"></i>Genesys</li>
+          <li class="flex items-center gap-3"><i class="fa-solid fa-caret-right text-brand/60 text-xs"></i>Avaya</li>
+          <li class="flex items-center gap-3"><i class="fa-solid fa-caret-right text-brand/60 text-xs"></i>CRM Systems</li>
+          <li class="flex items-center gap-3"><i class="fa-solid fa-caret-right text-brand/60 text-xs"></i>Internal Account Management Systems</li>
+          <li class="flex items-center gap-3"><i class="fa-solid fa-caret-right text-brand/60 text-xs"></i>Case Management Systems</li>
+        </ul>
+      </div>
+
+      <div class="bg-white p-10 reveal delay-100">
+        <div class="flex items-center gap-3 mb-8 border-b hairline pb-4">
+          <i class="fa-solid fa-briefcase text-brand"></i>
+          <h3 class="font-bold text-base text-ink tracking-tight">Productivity & Communication</h3>
+        </div>
+        <ul class="space-y-4 text-sm text-ink-light font-light">
+          <li class="flex items-center gap-3"><i class="fa-solid fa-caret-right text-brand/60 text-xs"></i>Microsoft Outlook</li>
+          <li class="flex items-center gap-3"><i class="fa-solid fa-caret-right text-brand/60 text-xs"></i>Microsoft Teams</li>
+          <li class="flex items-center gap-3"><i class="fa-solid fa-caret-right text-brand/60 text-xs"></i>Microsoft Excel</li>
+        </ul>
+      </div>
+
+      <div class="bg-white p-10 reveal delay-200">
+        <div class="flex items-center gap-3 mb-8 border-b hairline pb-4">
+          <i class="fa-solid fa-robot text-brand"></i>
+          <h3 class="font-bold text-base text-ink tracking-tight">AI & Productivity Tools</h3>
+        </div>
+        <ul class="space-y-4 text-sm text-ink-light font-light">
+          <li class="flex items-center gap-3"><i class="fa-solid fa-caret-right text-brand/60 text-xs"></i>ChatGPT</li>
+          <li class="flex items-center gap-3"><i class="fa-solid fa-caret-right text-brand/60 text-xs"></i>Google Gemini</li>
+          <li class="flex items-center gap-3"><i class="fa-solid fa-caret-right text-brand/60 text-xs"></i>Microsoft Copilot</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================== ENGAGEMENTS ============================================== -->
+<section id="engagements" class="py-24 border-b hairline bg-parchment">
+  <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
+    <div class="grid lg:grid-cols-12 gap-12 mb-12">
+      <div class="lg:col-span-5 reveal">
+        <span class="section-label">03 / Engagements</span>
+        <h2 class="text-4xl lg:text-5xl font-black text-ink tracking-tighter mt-4 leading-[1.05]">Professional Experience</h2>
+      </div>
+      <div class="lg:col-span-7 reveal delay-100 flex items-end justify-between gap-6">
+        <p class="text-xl text-ink-light font-light max-w-lg leading-relaxed">A chronological record of roles, responsibilities, and operational impact.</p>
+        <div class="hidden md:flex gap-2 shrink-0">
+          <button class="w-10 h-10 border border-ink/20 flex items-center justify-center hover:bg-ink hover:text-white transition-colors" data-swipe-prev="engagements-track" aria-label="Previous"><i class="fa-solid fa-arrow-left text-xs"></i></button>
+          <button class="w-10 h-10 border border-ink/20 flex items-center justify-center hover:bg-ink hover:text-white transition-colors" data-swipe-next="engagements-track" aria-label="Next"><i class="fa-solid fa-arrow-right text-xs"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="swipe-wrap on-parchment">
+      <div class="swipe-track" data-swipe id="engagements-track">
+
+        <!-- Engagement 1 -->
+        <article class="swipe-card bg-white border border-ink/15 mr-0">
+          <div class="p-8 h-full flex flex-col">
+            <div class="flex justify-between items-start mb-6 border-b hairline pb-4">
+              <div>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-1">Healthcare Advocacy</p>
+                <h3 class="text-2xl font-black text-ink tracking-tighter">Teleperformance</h3>
+                <p class="text-[9px] text-ink-muted uppercase tracking-widest mt-1">Pasay City, Philippines</p>
+              </div>
+              <span class="text-[9px] font-bold uppercase tracking-widest text-ink-muted border border-ink/20 px-2 py-1">Jul 2022–Jan 2023</span>
+            </div>
+            <p class="text-sm font-bold text-ink-light uppercase tracking-wide mb-4">Customer Service Advocate (US Healthcare)</p>
+            <ul class="space-y-3 text-xs text-ink-light font-light mt-auto border-t hairline pt-4">
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Assisted members with benefits, eligibility, claims, and billing inquiries</li>
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Explained healthcare plans, coverage details, and authorization requirements</li>
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Resolved concerns through active listening and effective problem-solving</li>
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Scheduled medical appointments, follow-ups, and consultations for members with in-network providers</li>
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Protected sensitive member information and followed compliance procedures</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- Engagement 2 -->
+        <article class="swipe-card bg-white border border-ink/15 ml-6">
+          <div class="p-8 h-full flex flex-col">
+            <div class="flex justify-between items-start mb-6 border-b hairline pb-4">
+              <div>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-1">Financial Risk</p>
+                <h3 class="text-2xl font-black text-ink tracking-tighter">Foundever</h3>
+                <p class="text-[9px] text-ink-muted uppercase tracking-widest mt-1">Makati City, Philippines</p>
+              </div>
+              <span class="text-[9px] font-bold uppercase tracking-widest text-ink-muted border border-ink/20 px-2 py-1">Jan 2023–Jan 2024</span>
+            </div>
+            <p class="text-sm font-bold text-ink-light uppercase tracking-wide mb-4">Fraud Specialist (US Financial Bank)</p>
+            <ul class="space-y-3 text-xs text-ink-light font-light mt-auto border-t hairline pt-4">
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Monitored accounts for suspicious and unauthorized activity</li>
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Conducted customer identity verification and security checks</li>
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Investigated fraud alerts and documented case findings</li>
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Contacted customers regarding disputed or suspicious transactions</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- Engagement 3 -->
+        <article class="swipe-card bg-white border border-ink/15 ml-6">
+          <div class="p-8 h-full flex flex-col">
+            <div class="flex justify-between items-start mb-6 border-b hairline pb-4">
+              <div>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-1">Billing & Sales</p>
+                <h3 class="text-2xl font-black text-ink tracking-tighter">TSI</h3>
+                <p class="text-[9px] text-ink-muted uppercase tracking-widest mt-1">Pasay City, Philippines</p>
+              </div>
+              <span class="text-[9px] font-bold uppercase tracking-widest text-ink-muted border border-ink/20 px-2 py-1">Jan 2024–Jan 2025</span>
+            </div>
+            <p class="text-sm font-bold text-ink-light uppercase tracking-wide mb-4">Billing/Sales Representative (US Utility)</p>
+            <ul class="space-y-3 text-xs text-ink-light font-light mt-auto border-t hairline pt-4">
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Handled billing inquiries through phone and email</li>
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Reviewed accounts, invoices, payments, and billing adjustments</li>
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Resolved discrepancies while maintaining accurate customer records</li>
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Appliance & Wiring Insurance Sales: Educated customers on optional protection plans, successfully selling insurance coverage for home appliances and internal electrical wiring to drive company revenue</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- Engagement 4 -->
+        <article class="swipe-card bg-white border border-ink/15 ml-6">
+          <div class="p-8 h-full flex flex-col">
+            <div class="flex justify-between items-start mb-6 border-b hairline pb-4">
+              <div>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-1">B2B Retention</p>
+                <h3 class="text-2xl font-black text-ink tracking-tighter">TSD Global</h3>
+                <p class="text-[9px] text-ink-muted uppercase tracking-widest mt-1">Taguig City, Philippines</p>
+              </div>
+              <span class="text-[9px] font-bold uppercase tracking-widest text-ink-muted border border-ink/20 px-2 py-1">Jan 2025–Aug 2025</span>
+            </div>
+            <p class="text-sm font-bold text-ink-light uppercase tracking-wide mb-4">B2B Sales and Retention Associate (Major US Telco Business Account)</p>
+            <ul class="space-y-3 text-xs text-ink-light font-light mt-auto border-t hairline pt-4">
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Managed B2B client relationships and retention activities</li>
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Addressed concerns and resolved account-related issues</li>
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Identified churn risks and recommended retention strategies</li>
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Coordinated with teams to improve client experiences</li>
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Maintained accurate records of client interactions</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- Engagement 5 -->
+        <article class="swipe-card bg-white border border-ink/15 ml-6">
+          <div class="p-8 h-full flex flex-col">
+            <div class="flex justify-between items-start mb-6 border-b hairline pb-4">
+              <div>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-1">SME Leadership</p>
+                <h3 class="text-2xl font-black text-ink tracking-tighter">EXL</h3>
+                <p class="text-[9px] text-ink-muted uppercase tracking-widest mt-1">Pasay City, Philippines</p>
+              </div>
+              <span class="text-[9px] font-bold uppercase tracking-widest text-ink-muted border border-ink/20 px-2 py-1">Aug 2025–Present</span>
+            </div>
+            <p class="text-sm font-bold text-ink-light uppercase tracking-wide mb-4">Subject Matter Expert & Insurance Account Specialist (AU Leading Multi-National Insurance Account)</p>
+            <ul class="space-y-3 text-xs text-ink-light font-light mt-auto border-t hairline pt-4">
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Provided expert guidance on complex process-related issues</li>
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Delivered coaching, mentoring, and refresher training</li>
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Monitored quality, productivity, and compliance performance</li>
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Updated procedures and maintained process documentation</li>
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Collaborated with operations and client stakeholders</li>
+              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Recommended improvements to enhance efficiency and accuracy</li>
+            </ul>
+          </div>
+        </article>
+
+      </div>
+    </div>
+    <div class="swipe-progress-track mt-8">
+      <div class="swipe-progress-bar" data-progress-for="engagements-track"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================== IMPACT ============================================== -->
+<section id="impact" class="py-24 border-b hairline bg-white">
+  <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
+    <div class="grid lg:grid-cols-12 gap-12 mb-16">
+      <div class="lg:col-span-4 reveal">
+        <span class="section-label">04 / Impact</span>
+        <h2 class="text-4xl lg:text-5xl font-black text-ink tracking-tighter mt-4 leading-[1.05]">Achievements & Recognition</h2>
+      </div>
+      <div class="lg:col-span-8 reveal delay-100 flex items-end">
+        <p class="text-xl text-ink-light font-light max-w-2xl leading-relaxed">Recognitions and results across five industries — each one earned on a real scorecard, not a résumé summary.</p>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-12 gap-px bg-ink/10 border border-ink/10">
+
+      <!-- EXL -->
+      <div class="md:col-span-6 bg-white p-10 reveal">
+        <div class="flex items-center justify-between mb-6">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-brand">EXL · Risk</p>
+          <i class="fa-solid fa-award text-ink/20"></i>
+        </div>
+        <p class="text-6xl font-black text-ink tracking-tighter leading-none mb-2">95%</p>
+        <p class="text-sm font-bold text-ink mb-6">Team Score Standard · 96.76% Top 3 Overall</p>
+        <ul class="space-y-3 text-xs text-ink-light font-light border-t hairline pt-6">
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Won a Hoscar 2025 award for being the Risk Champion throughout Q1 by ensuring good quality scores of the team</li>
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Consistently hitting the KPIs in team performance as the SME of the team</li>
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Maintained the team's score performance above 95% throughout the quarter by ensuring the correct procedure was given to the team</li>
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Got a certificate for being the top 3 overall performance as an agent achieving 96.76%</li>
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Consistently maintaining the productivity of the team in mailbox ensuring all client concerns addressed in a timely manner</li>
+        </ul>
+      </div>
+
+      <!-- TSI -->
+      <div class="md:col-span-6 bg-white p-10 reveal delay-100">
+        <div class="flex items-center justify-between mb-6">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-brand">TSI · Utilities</p>
+          <i class="fa-solid fa-trophy text-ink/20"></i>
+        </div>
+        <p class="text-6xl font-black text-ink tracking-tighter leading-none mb-2">#1</p>
+        <p class="text-sm font-bold text-ink mb-6">Top Performer (80 Agents) · 4.90/5.00 Overall KPI Score</p>
+        <ul class="space-y-3 text-xs text-ink-light font-light border-t hairline pt-6">
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Ranked #1 Top Performer out of 80 agents for two consecutive months by achieving a near-flawless 4.90/5.00 overall KPI score in 2024</li>
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Consistently exceeded all core call center metrics including Average Handle Time (AHT), Quality Assurance (QA), and Customer Satisfaction (CSAT)</li>
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Educated customers on Utility assistance programs, seamlessly enrolling eligible accounts into Budget Billing, energy efficiency programs, or state-sponsored financial aid to reduce delinquency rates</li>
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Mastered consultative sales strategies, seamlessly pivoting from service inquiries to value-based protection pitches by identifying customer risk factors and overcoming cost objections</li>
+        </ul>
+      </div>
+
+      <!-- TSD -->
+      <div class="md:col-span-4 bg-white p-8 reveal">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-6">TSD Global</p>
+        <p class="text-5xl font-black text-ink tracking-tighter leading-none mb-2">34%</p>
+        <p class="text-sm font-bold text-ink mb-4">At-Risk Retained · 25% Top-Tier Save Rate</p>
+        <ul class="space-y-3 text-xs text-ink-light font-light border-t hairline pt-4">
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Consistently achieving sales incentives by keeping target KPIs hit every month</li>
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Retained over 34% of at-risk customers by identifying core issues and delivering tailored solutions</li>
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Prevented customer cancellations by recommending cost-effective plans, suitable service options, and tailored solutions</li>
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Maintained a top-tier save rate of 25%, consistently exceeding departmental benchmarks</li>
+        </ul>
+      </div>
+
+      <!-- Foundever -->
+      <div class="md:col-span-4 bg-white p-8 reveal delay-100">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-6">Foundever</p>
+        <p class="text-5xl font-black text-ink tracking-tighter leading-none mb-2">98%</p>
+        <p class="text-sm font-bold text-ink mb-4">Fraud Claim Accuracy · PNC Unauthorized Transaction Mitigation</p>
+        <ul class="space-y-3 text-xs text-ink-light font-light border-t hairline pt-4">
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Maintained top-tier CSAT scores while guiding highly stressed fraud victims through account recovery</li>
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Recognized for maintaining low AHT while maintaining high accuracy in complex fraud investigations</li>
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Known for always contributing CSAT every power hour inside production floor</li>
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Minimized financial loss for PNC by accurately identifying, flagging, and stopping unauthorized credit card transactions</li>
+        </ul>
+      </div>
+
+      <!-- Teleperformance -->
+      <div class="md:col-span-4 bg-white p-8 reveal delay-200">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-6">Teleperformance</p>
+        <p class="text-5xl font-black text-ink tracking-tighter leading-none mb-2">99.98%</p>
+        <p class="text-sm font-bold text-ink mb-4">CSAT Rating Achievement</p>
+        <ul class="space-y-3 text-xs text-ink-light font-light border-t hairline pt-4">
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>De-escalated highly emotional calls regarding denied coverage or unexpected medical bills, restoring trust and retaining the account</li>
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Simplified complex healthcare jargon, insurance copays, and deductible structures into easy-to-understand terms</li>
+          <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Maintained a top-tier CSAT rating of 99.98% by delivering empathetic, clear, and structured support</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================== FIELD REPORTS ============================================== -->
+<section id="reports" class="py-24 border-b hairline bg-parchment">
+  <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
+    <div class="grid lg:grid-cols-12 gap-12 mb-12">
+      <div class="lg:col-span-5 reveal">
+        <span class="section-label">05 / Field Reports</span>
+        <h2 class="text-4xl lg:text-5xl font-black text-ink tracking-tighter mt-4 leading-[1.05]">Case Studies & Problem-Solving</h2>
+      </div>
+      <div class="lg:col-span-7 reveal delay-100 flex items-end">
+        <p class="text-xl text-ink-light font-light max-w-lg leading-relaxed">Showcasing practical experience in handling challenging customer situations, resolving complex concerns, identifying opportunities, and providing team support as a Subject Matter Expert.</p>
+      </div>
+    </div>
+
+    <div class="swipe-wrap on-parchment mb-2">
+      <div class="swipe-track" id="reports-tabs">
+        <button class="report-tab swipe-card bg-white border border-ink/15 p-5 text-left mr-3" data-report="0" aria-selected="true" role="tab">
+          <p class="tab-num text-[10px] font-bold uppercase tracking-widest text-brand mb-2">Report 01</p>
+          <p class="tab-title text-sm font-bold text-ink tracking-tight leading-snug">Prescription Cost & Deductible</p>
+        </button>
+        <button class="report-tab swipe-card bg-white border border-ink/15 p-5 text-left mr-3" data-report="1" aria-selected="false" role="tab">
+          <p class="tab-num text-[10px] font-bold uppercase tracking-widest text-brand mb-2">Report 02</p>
+          <p class="tab-title text-sm font-bold text-ink tracking-tight leading-snug">Lost Card & Unauthorized Transaction</p>
+        </button>
+        <button class="report-tab swipe-card bg-white border border-ink/15 p-5 text-left mr-3" data-report="2" aria-selected="false" role="tab">
+          <p class="tab-num text-[10px] font-bold uppercase tracking-widest text-brand mb-2">Report 03</p>
+          <p class="tab-title text-sm font-bold text-ink tracking-tight leading-snug">Disconnection Notice &amp; Sales Save</p>
+        </button>
+        <button class="report-tab swipe-card bg-white border border-ink/15 p-5 text-left mr-3" data-report="3" aria-selected="false" role="tab">
+          <p class="tab-num text-[10px] font-bold uppercase tracking-widest text-brand mb-2">Report 04</p>
+          <p class="tab-title text-sm font-bold text-ink tracking-tight leading-snug">Billing Dispute &amp; Retention</p>
+        </button>
+        <button class="report-tab swipe-card bg-white border border-ink/15 p-5 text-left" data-report="4" aria-selected="false" role="tab">
+          <p class="tab-num text-[10px] font-bold uppercase tracking-widest text-brand mb-2">Report 05</p>
+          <p class="tab-title text-sm font-bold text-ink tracking-tight leading-snug">Coaching &amp; Team Performance</p>
+        </button>
+      </div>
+    </div>
+    <div class="swipe-progress-track mb-10">
+      <div class="swipe-progress-bar" data-progress-for="reports-tabs"></div>
+    </div>
+
+    <div class="bg-white border border-ink/15 reveal">
+
+      <!-- Report 1 -->
+      <div class="report-panel" data-panel="0">
+        <div class="p-8 lg:p-12 border-b hairline">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-3">Report 01 · Teleperformance – Healthcare Account</p>
+          <h3 class="text-3xl lg:text-4xl font-black text-ink tracking-tighter leading-tight mb-4">Prescription Drug Cost & Deductible Concern</h3>
+        </div>
+
+        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10 border-b hairline">
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Situation & Challenge</h4>
+            <p class="text-sm text-ink-light font-light leading-relaxed">A Medicare member contacted UnitedHealthcare because she could not afford her prescribed medication. Since she had not yet met her applicable prescription drug deductible, she was responsible for the full applicable medication cost. She was worried about the financial burden and needed assistance finding a more affordable option.</p>
+          </div>
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Actions & Resolution</h4>
+            <ul class="space-y-2 text-sm text-ink-light font-light list-disc list-outside ml-4">
+              <li>Completed member identity verification before accessing account information</li>
+              <li>Reviewed prescription benefits and deductible status</li>
+              <li>Explained why the member was responsible for the medication cost</li>
+              <li>Used critical thinking and available resources to identify a potentially lower-cost medication with a similar therapeutic purpose</li>
+              <li>Recommended consulting the prescribing physician before considering an alternative</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-8 lg:p-12 bg-parchment/40 border-b hairline">
+          <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-6 flex items-center gap-3"><i class="fa-solid fa-comments text-brand"></i> Call Scenario</h4>
+          <!-- Chat container full width -->
+          <div class="space-y-6 text-sm w-full">
+            <div class="flex flex-col items-start">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Member</span>
+              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">I'm having trouble affording my medication. I was surprised by the price at the pharmacy because I thought my insurance would cover it.</div>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
+              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">I understand your concern, and I'm sorry you're experiencing this. I'd be happy to look into your prescription coverage and explore what options may be available. Before we proceed, may I verify your information?</div>
+            </div>
+            <div class="flex flex-col items-start">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Member</span>
+              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">Sure.</div>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
+              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">Thank you for completing the verification. Please allow me a moment while I review your benefits.</div>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
+              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">After reviewing your benefits, I found that you haven't met your applicable prescription drug deductible yet, which is why you're currently responsible for the medication cost.</div>
+            </div>
+            <div class="flex flex-col items-start">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Member</span>
+              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">I really need this medication, but I can't afford to keep paying that much.</div>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
+              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">I completely understand. Let me explore the available resources to see if there's another option that may help reduce your expenses.</div>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
+              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">I found a potentially lower-cost alternative medication with a similar therapeutic purpose. I recommend discussing it with your prescribing physician to determine if it's medically appropriate for you.</div>
+            </div>
+            <div class="flex flex-col items-start">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Member</span>
+              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">That would be really helpful. Thank you for looking into that for me.</div>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
+              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">You're very welcome! I'm glad I could help provide another option.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10">
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Outcome</h4>
+            <p class="text-sm text-ink-light font-light leading-relaxed">Successfully addressed the member's concern by clarifying her prescription benefits and identifying a potential cost-saving alternative. The member appreciated the initiative and expressed gratitude for the assistance provided.</p>
+          </div>
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Skills Demonstrated</h4>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Critical Thinking</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Problem-Solving</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Empathy</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Healthcare Benefits Knowledge</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Resource Navigation</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Identity Verification</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Active Listening</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Report 2 -->
+      <div class="report-panel hidden" data-panel="1">
+        <div class="p-8 lg:p-12 border-b hairline">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-3">Report 02 · Foundever – Financial Account</p>
+          <h3 class="text-3xl lg:text-4xl font-black text-ink tracking-tighter leading-tight mb-4">Lost Credit Card & Unauthorized Transaction</h3>
+        </div>
+
+        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10 border-b hairline">
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Situation & Challenge</h4>
+            <p class="text-sm text-ink-light font-light leading-relaxed">A customer contacted PNC Bank after losing his credit card and discovering an unauthorized transaction on his statement. He was extremely upset and initially refused identity verification, believing the transaction should have been automatically declined.</p>
+          </div>
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Actions & Resolution</h4>
+            <ul class="space-y-2 text-sm text-ink-light font-light list-disc list-outside ml-4">
+              <li>Demonstrated empathy and acknowledged the customer's frustration</li>
+              <li>Successfully de-escalated the situation and gained the customer's cooperation</li>
+              <li>Explained the importance of identity verification and account security</li>
+              <li>Reported the unauthorized transaction, locked the compromised card, and processed a replacement card</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-8 lg:p-12 bg-parchment/40 border-b hairline">
+          <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-6 flex items-center gap-3"><i class="fa-solid fa-comments text-brand"></i> Call Scenario</h4>
+          <div class="space-y-6 text-sm w-full">
+            <div class="flex flex-col items-start">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
+              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">I lost my credit card, and now there's an unauthorized transaction on my account! Why wasn't this transaction declined? I don't want to go through verification again!</div>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
+              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">I completely understand your frustration. If I were in your situation, I would feel the same way. Please allow me to help you sort this out.</div>
+            </div>
+            <div class="flex flex-col items-start">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
+              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">Why do you still need to verify me? I just want this fixed!</div>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
+              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">I understand. Verification is an important security measure to ensure we're speaking with the authorized account holder and to protect your account from unauthorized access. Once we complete this step, I'll be able to assist you with reporting the transaction and securing your card.</div>
+            </div>
+            <div class="flex flex-col items-start">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
+              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">Alright, let's proceed.</div>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
+              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">Thank you for your cooperation. I've successfully reported the unauthorized transaction, locked your lost card, and processed a replacement card for you.</div>
+            </div>
+            <div class="flex flex-col items-start">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
+              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">Thank you for helping me. I'll make sure to give you a good survey after this call.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10">
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Outcome</h4>
+            <p class="text-sm text-ink-light font-light leading-relaxed">Successfully addressed the customer's concerns and secured the compromised card. The customer ended the call satisfied and proactively expressed his intention to provide a positive survey.</p>
+          </div>
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Skills Demonstrated</h4>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Empathy</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Critical Thinking</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Customer De-escalation</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Fraud Awareness</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Active Listening</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Problem-Solving</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Account Security</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Report 3 -->
+      <div class="report-panel hidden" data-panel="2">
+        <div class="p-8 lg:p-12 border-b hairline">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-3">Report 03 · TSI – US Utility Account & Sales</p>
+          <h3 class="text-3xl lg:text-4xl font-black text-ink tracking-tighter leading-tight mb-4">Urgent Disconnection Notice & Insurance Sales Opportunity</h3>
+        </div>
+
+        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10 border-b hairline">
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Situation & Challenge</h4>
+            <p class="text-sm text-ink-light font-light leading-relaxed">A customer contacted Duke Energy in distress because her electricity was scheduled for disconnection within 24 hours. Her father, who lived in the same household, relied on an oxygen machine. Although they could pay the outstanding balance, they needed four additional days to secure the funds.</p>
+          </div>
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Actions & Resolution</h4>
+            <ul class="space-y-2 text-sm text-ink-light font-light list-disc list-outside ml-4">
+              <li>Completed account verification and assessed the customer's situation</li>
+              <li>Demonstrated empathy and prioritized the urgency of the medical circumstances</li>
+              <li>Explored installment arrangements but identified that the customer had reached the maximum limit</li>
+              <li>Took initiative by checking eligibility and successfully processing a courtesy extension</li>
+              <li>Identified a sales opportunity and pitched Duke Energy's optional home wiring protection insurance product</li>
+              <li>Successfully converted the offer into an enrollment, contributing to sales and conversation conversion performance</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-8 lg:p-12 bg-parchment/40 border-b hairline">
+          <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-6 flex items-center gap-3"><i class="fa-solid fa-comments text-brand"></i> Call Scenario</h4>
+          <div class="space-y-6 text-sm w-full">
+            <div class="flex flex-col items-start">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
+              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">Please, I really need your help. My electricity is scheduled for disconnection tomorrow, and my father is using an oxygen machine. We can pay the bill, but we just need four more days.</div>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
+              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">I completely understand your situation, and I know how important it is to keep your electricity running, especially with your father's medical needs. Let me review your account and see what options are available.</div>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
+              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">After completing verification, I've checked your account for available installment arrangements. Unfortunately, you've already reached the maximum limit for that option. However, let me check if you're eligible for a courtesy extension.</div>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
+              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">Good news! You're still eligible for a courtesy extension, and I've successfully processed it to give you additional time to settle your balance.</div>
+            </div>
+            <div class="flex flex-col items-start">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
+              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">Thank you so much! I promise we'll pay as soon as we have the money.</div>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
+              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">You're very welcome! Also, since storms are common in your area, I'd like to introduce an optional home wiring protection plan that may help protect your electrical wiring. Would you be interested in learning more?</div>
+            </div>
+            <div class="flex flex-col items-start">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
+              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">Yes, that sounds helpful. I'd like to get that.</div>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
+              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">Absolutely! Let me walk you through the coverage and enrollment details.</div>
+            </div>
+            <div class="flex flex-col items-start">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
+              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">Thank you again. I'll definitely leave you a good survey for helping us.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10">
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Outcome</h4>
+            <p class="text-sm text-ink-light font-light leading-relaxed">Successfully provided the customer with additional time to settle the outstanding balance and avoid immediate disconnection. Additionally, converted the conversation into a successful insurance product enrollment. The customer expressed gratitude and proactively promised to provide a positive survey.</p>
+          </div>
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Skills Demonstrated</h4>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Empathy</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Critical Thinking</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Problem-Solving</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Urgent Call Handling</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Payment Assistance</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Sales Conversion</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Product Pitching</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Customer Relationship Management</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Report 4 -->
+      <div class="report-panel hidden" data-panel="3">
+        <div class="p-8 lg:p-12 border-b hairline">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-3">Report 04 · TSD Global – Telecommunications Business-to-Business Campaign</p>
+          <h3 class="text-3xl lg:text-4xl font-black text-ink tracking-tighter leading-tight mb-4">Billing Dispute & Customer Retention</h3>
+        </div>
+
+        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10 border-b hairline">
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Situation & Challenge</h4>
+            <p class="text-sm text-ink-light font-light leading-relaxed">A business customer contacted the company upset because a previous representative had promised that adding a smartwatch would lower his monthly bill. However, his bill increased instead, leading him to consider canceling all his lines.</p>
+          </div>
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Actions & Resolution</h4>
+            <ul class="space-y-2 text-sm text-ink-light font-light list-disc list-outside ml-4">
+              <li>Acknowledged the customer's frustration and apologized for the misinformation</li>
+              <li>Completed account verification and reviewed the billing details</li>
+              <li>Identified that the smartwatch discount was scheduled to reflect on the following billing cycle</li>
+              <li>Reviewed each device and line individually to identify cost-saving opportunities</li>
+              <li>Adjusted eligible plans and applied available discounts to help lower the customer's monthly bill</li>
+              <li>Successfully addressed the customer's concern and retained the active lines</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-8 lg:p-12 bg-parchment/40 border-b hairline">
+          <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-6 flex items-center gap-3"><i class="fa-solid fa-comments text-brand"></i> Call Scenario</h4>
+          <div class="space-y-6 text-sm w-full">
+            <div class="flex flex-col items-start">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
+              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">I was told my bill would go down if I added a smartwatch, but now my bill is even higher. I want to cancel all my lines.</div>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
+              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">I sincerely apologize for the confusion and for the information you were previously given. I understand why you're frustrated. Let me verify your account and review the charges so I can see what happened and what options are available.</div>
+            </div>
+            <div class="flex flex-col items-start">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
+              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">I just want to cancel everything. This isn't what I agreed to.</div>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
+              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">I understand your decision. After reviewing your account, I found that the discount was applied when the smartwatch was added, but it was scheduled to reflect on your next billing cycle. I'm sorry this wasn't properly explained to you. Before we proceed with cancellation, may I review your current plans and see if there are other ways to help lower your monthly bill?</div>
+            </div>
+            <div class="flex flex-col items-start">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
+              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">Okay, what can you do?</div>
+            </div>
+            <div class="flex flex-col items-end">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
+              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">I reviewed each line individually and found opportunities to adjust some of your plans and apply available discounts to eligible lines. These changes can help reduce your monthly expenses while keeping your services active.</div>
+            </div>
+            <div class="flex flex-col items-start">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
+              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">That sounds better. I'll keep the lines.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10">
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Outcome</h4>
+            <p class="text-sm text-ink-light font-light leading-relaxed">The customer understood the billing situation and was satisfied with the adjustments made to the account. Instead of proceeding with cancellation, the customer decided to keep all lines active.</p>
+          </div>
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Skills Demonstrated</h4>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Customer Retention & Loyalty</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Objection Handling</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Billing Analysis</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Empathy & Active Listening</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Negotiation & Persuasion</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Problem-Solving</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Account Management</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Sales & Retention Strategies</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Report 5 -->
+      <div class="report-panel hidden" data-panel="4">
+        <div class="p-8 lg:p-12 border-b hairline">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-3">Report 05 · EXL – AU Insurance Account</p>
+          <h3 class="text-3xl lg:text-4xl font-black text-ink tracking-tighter leading-tight mb-4">One-on-One Coaching & Team Performance Improvement</h3>
+        </div>
+
+        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10 border-b hairline">
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Situation & Challenge</h4>
+            <p class="text-sm text-ink-light font-light leading-relaxed">As a Subject Matter Expert (SME), one of my responsibilities was to support agents who needed additional guidance with account processes and daily tasks. One team member was struggling to keep up with the required procedures and had difficulty handling certain customer concerns.</p>
+          </div>
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Actions & Resolution</h4>
+            <ul class="space-y-2 text-sm text-ink-light font-light list-disc list-outside ml-4">
+              <li>Conducted one-on-one coaching to understand the agent's challenges and identify specific areas where additional guidance was needed</li>
+              <li>Provided side-by-side coaching to reinforce the correct processes and procedures</li>
+              <li>Shared practical tips for handling mailbox tasks and maintaining trackers more efficiently</li>
+              <li>Provided guidance on handling calls, communicating with customers, and managing challenging situations</li>
+              <li>Continued providing support to help the agent become more confident and consistent in performing daily responsibilities</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10">
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Outcome</h4>
+            <p class="text-sm text-ink-light font-light leading-relaxed">The agent gradually improved his understanding of the processes and became more confident in handling daily tasks. His Quality Assurance (QA) performance improved, and he was able to keep up with his teammates while performing his responsibilities more effectively.</p>
+          </div>
+          <div>
+            <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Skills Demonstrated</h4>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Leadership & Team Support</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">One-on-One Coaching</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Performance Management</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Process Improvement</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Quality Assurance</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Communication & Active Listening</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Problem-Solving</span>
+              <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Knowledge Sharing</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================== CONTACT ============================================== -->
+<section id="contact" class="py-24 bg-vellum">
+  <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
+    <div class="grid lg:grid-cols-12 gap-16 lg:gap-24">
+
+      <div class="lg:col-span-5 reveal">
+        <span class="section-label">06 / Brief</span>
+        <h2 class="text-4xl lg:text-5xl font-black text-ink tracking-tighter mt-4 leading-[1.05] mb-8">Get In Touch</h2>
+        <p class="text-lg text-ink-light mb-12 font-light leading-relaxed">Ready to add reliability to your operations? Send a message and you'll hear back within four business hours.</p>
+
+        <div class="space-y-6 mb-12">
+          <a href="tel:+639995786676" class="flex items-center gap-5 group">
+            <div class="w-12 h-12 border border-ink/20 bg-white flex items-center justify-center text-ink group-hover:bg-brand group-hover:text-white group-hover:border-brand transition-colors">
+              <i class="fa-solid fa-phone text-sm"></i>
+            </div>
+            <div>
+              <p class="text-[10px] font-bold text-ink-muted uppercase tracking-widest mb-1">Phone</p>
+              <p class="text-base font-medium text-ink group-hover:text-brand transition-colors">+63 9995788676</p>
+            </div>
+          </a>
+          <a href="tel:+639995786676" class="flex items-center gap-5 group">
+            <div class="w-12 h-12 border border-ink/20 bg-white flex items-center justify-center text-ink group-hover:bg-brand group-hover:text-white group-hover:border-brand transition-colors">
+              <i class="fa-brands fa-whatsapp text-sm"></i>
+            </div>
+            <div>
+              <p class="text-[10px] font-bold text-ink-muted uppercase tracking-widest mb-1">What's App</p>
+              <p class="text-base font-medium text-ink group-hover:text-brand transition-colors">+63 9995788676</p>
+            </div>
+          </a>
+          <a href="mailto:balmesjohnfxn@gmail.com" class="flex items-center gap-5 group">
+            <div class="w-12 h-12 border border-ink/20 bg-white flex items-center justify-center text-ink group-hover:bg-brand group-hover:text-white group-hover:border-brand transition-colors">
+              <i class="fa-solid fa-envelope text-sm"></i>
+            </div>
+            <div>
+              <p class="text-[10px] font-bold text-ink-muted uppercase tracking-widest mb-1">Email</p>
+              <p class="text-base font-medium text-ink group-hover:text-brand transition-colors">balmesjohn15@gmail.com</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7 reveal delay-100">
+        <form class="space-y-6 bg-white p-8 lg:p-10 border border-ink/15">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label for="name" class="block text-[10px] font-bold text-ink uppercase tracking-widest mb-2">Full Name</label>
+              <input type="text" id="name" class="form-input" placeholder="John Doe">
+            </div>
+            <div>
+              <label for="email" class="block text-[10px] font-bold text-ink uppercase tracking-widest mb-2">Email</label>
+              <input type="email" id="email" class="form-input" placeholder="john@company.com">
+            </div>
+          </div>
+          <div>
+            <label for="subject" class="block text-[10px] font-bold text-ink uppercase tracking-widest mb-2">Subject</label>
+            <input type="text" id="subject" class="form-input" placeholder="What do you need covered?">
+          </div>
+          <div>
+            <label for="message" class="block text-[10px] font-bold text-ink uppercase tracking-widest mb-2">Message</label>
+            <textarea id="message" rows="5" class="form-input resize-none" placeholder="Context, timeline, and what success looks like."></textarea>
+          </div>
+          <button type="submit" class="inline-flex justify-center items-center px-10 py-4 text-xs font-bold tracking-widest uppercase text-white bg-brand hover:bg-brand-dark transition-colors w-full md:w-auto">
+            Send Message <i class="fa-solid fa-arrow-right ml-3 text-[10px]"></i>
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================== FOOTER ============================================== -->
+<footer class="bg-white border-t border-ink py-12">
+  <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-10 mb-12">
+      <div>
+        <span class="font-black text-xl text-ink block leading-tight tracking-tighter">John Frixx T. Balmes</span>
+        <span class="text-[10px] text-ink-muted font-bold tracking-widest uppercase mt-2 block">Subject Matter Expert | Operations & Customer Support Professional</span>
+      </div>
+      <div class="flex flex-wrap gap-x-10 gap-y-4 text-[10px] font-bold tracking-widest uppercase text-ink-light">
+        <a href="#home" class="hover:text-brand transition-colors">Home</a>
+        <a href="#about" class="hover:text-brand transition-colors">About</a>
+        <a href="#capabilities" class="hover:text-brand transition-colors">Capability</a>
+        <a href="#engagements" class="hover:text-brand transition-colors">Engagements</a>
+        <a href="#impact" class="hover:text-brand transition-colors">Impact</a>
+        <a href="#reports" class="hover:text-brand transition-colors">Field Reports</a>
+        <a href="#contact" class="hover:text-brand transition-colors">Contact</a>
+      </div>
+    </div>
+    <div class="pt-8 border-t hairline-dark flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-bold tracking-widest uppercase text-ink-muted">
+      <p>&copy; 2026 John Frixx T. Balmes. All rights reserved.</p>
+      <div class="flex items-center gap-3">
+        <span class="live-dot"></span>
+        <span>Available for Work</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================== JS ============================================== -->
+<script>
+/* ---- Clean URL (Remove /index.html) ---- */
+if (window.location.pathname.endsWith('/index.html')) {
+  const cleanPath = window.location.pathname.replace('index.html', '') + window.location.hash;
+  window.history.replaceState(null, '', cleanPath);
+}
+
+/* ---- Mobile menu ---- */
+const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+const menuIcon = mobileMenuBtn.querySelector('i');
+mobileMenuBtn.addEventListener('click', () => {
+  mobileMenu.classList.toggle('hidden');
+  const open = !mobileMenu.classList.contains('hidden');
+  menuIcon.className = open ? 'fa-solid fa-xmark text-xl' : 'fa-solid fa-bars text-xl';
+});
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  mobileMenu.classList.add('hidden');
+  menuIcon.className = 'fa-solid fa-bars text-xl';
+}));
+
+/* ---- Navbar scroll ---- */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('shadow-sm', window.scrollY > 20);
+});
+
+/* ---- Live PHT clock + last verified ---- */
+function updatePHT() {
+  const now = new Date();
+  const pht = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Manila' }));
+  const h = pht.getHours();
+  const m = pht.getMinutes().toString().padStart(2, '0');
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12 = h % 12 || 12;
+  document.getElementById('pht-clock').textContent = `${h12}:${m} ${ampm} PHT`;
+  document.getElementById('last-verified').textContent = pht.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+updatePHT();
+setInterval(updatePHT, 30000);
+
+/* ---- Reveal on scroll ---- */
+const revealObserver = new IntersectionObserver((entries, obs) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('active'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* ---- Generic Swipe Tracks (excluding tabs) ---- */
+function attachSwipe(track) {
+  if (!track) return;
+  const progressBar = document.querySelector(`[data-progress-for="${track.id}"]`);
+  const update = () => {
+    const max = track.scrollWidth - track.clientWidth;
+    const pct = max > 0 ? (track.scrollLeft / max) * 100 : 100;
+    if (progressBar) {
+      progressBar.style.width = `${Math.max(20, pct)}%`;
+      progressBar.style.transform = `translateX(${Math.min(80, pct * 0.8)}%)`;
+    }
+  };
+  track.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+
+  const prev = document.querySelector(`[data-swipe-prev="${track.id}"]`);
+  const next = document.querySelector(`[data-swipe-next="${track.id}"]`);
+  const step = () => Math.max(280, track.clientWidth * 0.5);
+  if (prev) prev.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+  if (next) next.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+
+  track.tabIndex = 0;
+  track.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); track.scrollBy({ left: step(), behavior: 'smooth' }); }
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); track.scrollBy({ left: -step(), behavior: 'smooth' }); }
+  });
+}
+document.querySelectorAll('[data-swipe]').forEach(attachSwipe);
+
+/* ---- Field Reports Tabs (Fixed Underline logic) ---- */
+const reportTabs = document.querySelectorAll('.report-tab');
+const reportPanels = document.querySelectorAll('.report-panel');
+const tabProgressBar = document.querySelector('[data-progress-for="reports-tabs"]');
+
+if (tabProgressBar && reportTabs.length > 0) {
+  tabProgressBar.style.width = `${100 / reportTabs.length}%`;
+  tabProgressBar.style.transition = 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+  tabProgressBar.style.transform = 'translateX(0%)';
+}
+
+reportTabs.forEach((tab, index) => {
+  tab.addEventListener('click', () => {
+    const idx = tab.dataset.report;
+    
+    reportTabs.forEach(t => t.setAttribute('aria-selected', 'false'));
+    tab.setAttribute('aria-selected', 'true');
+    
+    reportPanels.forEach(p => {
+      p.classList.toggle('hidden', p.dataset.panel !== idx);
+    });
+
+    if (tabProgressBar) {
+      tabProgressBar.style.transform = `translateX(${index * 100}%)`;
+    }
+
+    tab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  });
+});
+
+/* ---- Proof Strip Auto-Carousel ---- */
+const proofTrack = document.getElementById('proof-track');
+if (proofTrack) {
+  let autoScrollInterval;
+  let isPaused = false;
+
+  const startAutoScroll = () => {
+    autoScrollInterval = setInterval(() => {
+      if (isPaused) return;
+      
+      const maxScroll = proofTrack.scrollWidth - proofTrack.clientWidth;
+      
+      if (proofTrack.scrollLeft >= maxScroll - 10) {
+        proofTrack.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        const cardWidth = proofTrack.querySelector('.swipe-card').offsetWidth;
+        proofTrack.scrollBy({ left: cardWidth + 24, behavior: 'smooth' });
+      }
+    }, 3500); 
+  };
+
+  proofTrack.addEventListener('mouseenter', () => isPaused = true);
+  proofTrack.addEventListener('mouseleave', () => isPaused = false);
+  proofTrack.addEventListener('touchstart', () => isPaused = true);
+  proofTrack.addEventListener('touchend', () => isPaused = false);
+
+  startAutoScroll();
+}
+</script>
+
+</body>
+</html>
