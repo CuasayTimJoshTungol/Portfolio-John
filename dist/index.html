@@ -69,11 +69,11 @@ tailwind.config = {
   .form-input:focus { outline:none; border-color:#1E40AF; box-shadow: inset 0 0 0 1px #1E40AF; }
   .form-input::placeholder { color: #9CA3AF; }
 
-  .report-tab { transition: all .25s ease; cursor: pointer; }
-  .report-tab[aria-selected="true"] { background:#0B1220; color:#FFF; border-color:#0B1220; }
-  .report-tab[aria-selected="true"] .tab-num { color:#93C5FD; }
-  .report-tab[aria-selected="true"] .tab-title { color:#FFF; }
-  .report-tab:not([aria-selected="true"]):hover { border-color:#1E40AF; background:#FAFAFA; }
+  .report-tab { transition: all .2s ease; cursor: pointer; border: 1px solid #E5E7EB; background: #FFF; border-bottom: 2px solid transparent; }
+  .report-tab:hover { border-color: #1E40AF; background: #F9FAFB; }
+  .report-tab[aria-selected="true"] { background: #F0F4FF; border-color: #1E40AF; border-bottom: 2px solid #1E40AF; }
+  .report-tab[aria-selected="true"] .tab-num { color: #1E40AF; }
+  .report-tab[aria-selected="true"] .tab-title { color: #1E40AF; font-weight: 800; }
 
   .section-label { display:inline-flex; align-items:center; gap:.75rem; font-size:10px; font-weight:700; letter-spacing:.25em; text-transform:uppercase; color:#1E40AF; }
   .section-label::before { content:''; width:28px; height:2px; background:#1E40AF; }
@@ -93,13 +93,20 @@ tailwind.config = {
         </span>
       </a>
 
-      <div class="hidden lg:flex items-center space-x-8 h-full">
-        <a href="#about" class="text-[11px] font-bold tracking-widest uppercase text-ink-light hover:text-brand transition-colors h-full flex items-center border-b-2 border-transparent hover:border-brand">About</a>
-        <a href="#capabilities" class="text-[11px] font-bold tracking-widest uppercase text-ink-light hover:text-brand transition-colors h-full flex items-center border-b-2 border-transparent hover:border-brand">Capability</a>
-        <a href="#engagements" class="text-[11px] font-bold tracking-widest uppercase text-ink-light hover:text-brand transition-colors h-full flex items-center border-b-2 border-transparent hover:border-brand">Engagements</a>
-        <a href="#impact" class="text-[11px] font-bold tracking-widest uppercase text-ink-light hover:text-brand transition-colors h-full flex items-center border-b-2 border-transparent hover:border-brand">Impact</a>
-        <a href="#reports" class="text-[11px] font-bold tracking-widest uppercase text-ink-light hover:text-brand transition-colors h-full flex items-center border-b-2 border-transparent hover:border-brand">Field Reports</a>
-        <a href="#contact" class="text-[11px] font-bold tracking-widest uppercase text-white bg-brand hover:bg-brand-dark transition-colors px-5 py-2.5">Contact</a>
+      <div class="hidden lg:flex items-center h-full">
+        <div class="flex items-center space-x-8 mr-8">
+          <a href="#about" class="text-[11px] font-bold tracking-widest uppercase text-ink-light hover:text-brand transition-colors h-full flex items-center border-b-2 border-transparent hover:border-brand">About</a>
+          <a href="#capabilities" class="text-[11px] font-bold tracking-widest uppercase text-ink-light hover:text-brand transition-colors h-full flex items-center border-b-2 border-transparent hover:border-brand">Capability</a>
+          <a href="#engagements" class="text-[11px] font-bold tracking-widest uppercase text-ink-light hover:text-brand transition-colors h-full flex items-center border-b-2 border-transparent hover:border-brand">Engagements</a>
+          <a href="#impact" class="text-[11px] font-bold tracking-widest uppercase text-ink-light hover:text-brand transition-colors h-full flex items-center border-b-2 border-transparent hover:border-brand">Impact</a>
+          <a href="#reports" class="text-[11px] font-bold tracking-widest uppercase text-ink-light hover:text-brand transition-colors h-full flex items-center border-b-2 border-transparent hover:border-brand">Field Reports</a>
+        </div>
+        
+        <div class="flex items-center gap-3">
+          <a href="#contact" class="text-[11px] font-bold tracking-widest uppercase text-white bg-brand hover:bg-brand-dark transition-colors px-5 py-2.5">Contact</a>
+          <!-- UPDATED: View CV Button triggers modal -->
+          <button onclick="openCVModal()" class="text-[11px] font-bold tracking-widest uppercase text-brand border border-brand hover:bg-brand hover:text-white transition-colors px-5 py-2.5">View CV</button>
+        </div>
       </div>
 
       <button id="mobile-menu-btn" class="lg:hidden text-ink hover:text-brand p-2" aria-label="Menu">
@@ -115,7 +122,9 @@ tailwind.config = {
       <a href="#engagements" class="block py-3 text-xs font-bold tracking-widest uppercase text-ink hover:text-brand border-b hairline">Engagements</a>
       <a href="#impact" class="block py-3 text-xs font-bold tracking-widest uppercase text-ink hover:text-brand border-b hairline">Impact</a>
       <a href="#reports" class="block py-3 text-xs font-bold tracking-widest uppercase text-ink hover:text-brand border-b hairline">Field Reports</a>
-      <a href="#contact" class="block py-3 text-xs font-bold tracking-widest uppercase text-brand">Brief</a>
+      <!-- UPDATED: Mobile View CV Button -->
+      <button onclick="openCVModal()" class="block w-full text-left py-3 text-xs font-bold tracking-widest uppercase text-brand border-b hairline">View CV</button>
+      <a href="#contact" class="block py-3 text-xs font-bold tracking-widest uppercase text-brand">Contact</a>
     </div>
   </div>
 </nav>
@@ -124,27 +133,22 @@ tailwind.config = {
 <section id="home" class="pt-32 pb-16 lg:pt-40 lg:pb-20">
   <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
     <div class="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-
       <div class="lg:col-span-7 reveal">
         <div class="inline-flex items-center gap-3 mb-8">
           <span class="text-[10px] font-bold tracking-mega text-ink-muted uppercase">PORTFOLIO & OPERATIONAL PROFILE</span>
         </div>
-
         <h1 class="text-5xl sm:text-6xl lg:text-[5.25rem] font-black text-ink leading-[1.02] tracking-tighter mb-8">
           Efficient Operations,<br>
           <span class="text-brand">Reliable Results.</span>
         </h1>
-
         <p class="text-xl lg:text-2xl text-ink-light mb-10 max-w-2xl leading-relaxed font-light">
           Experienced Subject Matter Expert (SME) with a background in high-touch B2B customer retention, sales operations, financial services compliance, and healthcare customer advocacy. Four years. Five industries. Zero dropped balls.
         </p>
-
         <div class="flex flex-col sm:flex-row gap-4 mb-12">
           <a href="#engagements" class="inline-flex justify-center items-center px-8 py-4 text-xs font-bold tracking-widest uppercase text-white bg-brand hover:bg-brand-dark transition-colors">
             View my Experience <i class="fa-solid fa-arrow-right ml-3 text-[10px]"></i>
           </a>
         </div>
-
         <div class="flex flex-wrap items-center gap-x-8 gap-y-3 text-[11px] font-bold uppercase tracking-widest text-ink-muted border-t hairline-dark pt-6">
           <span class="flex items-center gap-2"><i class="fa-solid fa-check text-brand text-[10px]"></i>4+ Years</span>
           <span class="flex items-center gap-2"><i class="fa-solid fa-check text-brand text-[10px]"></i>5 Industries</span>
@@ -156,19 +160,17 @@ tailwind.config = {
       <div class="lg:col-span-5 reveal delay-100">
         <div class="bg-white border border-ink/15">
           <div class="relative w-full aspect-[4/3] overflow-hidden bg-parchment border-b border-ink/15">
-            <img src="balmes.png" alt="John Frxn T. Balmes" class="w-full h-full object-cover object-[center_20%]">
+            <img src="balmes.png" alt="John Frixx T. Balmes" class="w-full h-full object-cover object-[center_20%]">
             <div class="absolute top-4 left-4 inline-flex items-center gap-2 bg-ink text-white px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest">
               <span class="live-dot"></span> Live Status
             </div>
           </div>
-
           <div class="p-6 space-y-5">
             <div>
               <p class="text-[9px] font-bold text-ink-muted uppercase tracking-widest mb-1">Verified Professional</p>
               <p class="text-lg font-bold text-ink tracking-tight">John Frixx T. Balmes</p>
               <p class="text-[10px] font-bold text-brand uppercase tracking-widest mt-1">Current Role: Subject Matter Expert</p>
             </div>
-
             <div class="grid grid-cols-2 gap-x-4 gap-y-4 border-t hairline pt-5">
               <div>
                 <p class="text-[9px] font-bold text-ink-muted uppercase tracking-widest mb-1">Local Time · PHT</p>
@@ -187,7 +189,6 @@ tailwind.config = {
                 <p id="last-verified" class="text-sm font-bold text-ink">—</p>
               </div>
             </div>
-
             <div class="bg-parchment border border-ink/10 p-3 flex items-start gap-3">
               <i class="fa-solid fa-circle-info text-brand text-xs mt-0.5"></i>
               <p class="text-[11px] text-ink-light font-light leading-relaxed">Open to full-time opportunities and process-improvement consulting.</p>
@@ -202,11 +203,8 @@ tailwind.config = {
 <!-- ============================================== PROOF STRIP ============================================== -->
 <section class="py-10 border-y hairline bg-white">
   <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
-    <div class="flex items-center justify-between mb-4">
-    </div>
-
+    <div class="flex items-center justify-between mb-4"></div>
     <div class="swipe-wrap on-white">
-      <!-- Added ID here for the auto-carousel JS -->
       <div class="swipe-track" data-swipe id="proof-track">
         <div class="swipe-card pr-6 border-r hairline">
           <p class="text-4xl font-black text-ink tracking-tighter">99.98%</p>
@@ -255,11 +253,7 @@ tailwind.config = {
         <p class="text-lg text-ink-light font-light leading-relaxed mb-10">
           Through my experience as a Subject Matter Expert, I've also developed strengths in process guidance, problem-solving, and maintaining team performance and quality standards. I value accuracy, efficiency, and finding practical solutions that keep things moving.
         </p>
-
-        <!-- NEW: Profile Card & What I Can Do -->
         <div class="grid md:grid-cols-2 gap-8 border-t hairline-dark pt-8">
-          
-          <!-- Profile Card -->
           <div class="bg-white border border-ink/15 p-6">
             <div class="flex items-center gap-5 mb-6">
               <div class="w-16 h-16 overflow-hidden border border-ink/20 shrink-0">
@@ -270,21 +264,17 @@ tailwind.config = {
                 <p class="text-sm text-ink-light font-medium mt-1">Operations & SME Specialist</p>
               </div>
             </div>
-            
             <div class="bg-parchment p-5 border border-ink/10">
               <div class="flex justify-between items-center mb-2">
                 <span class="text-sm font-bold text-ink">Performance Standard</span>
                 <span class="text-sm font-bold text-brand">Top Tier</span>
               </div>
-              <!-- Progress Bar -->
               <div class="h-1.5 w-full bg-gray-200 mb-4">
                 <div class="h-full bg-brand w-[95%]"></div>
               </div>
               <p class="text-[13px] text-ink-light font-light leading-relaxed">Focused on continuous accuracy, compliance, and team elevation.</p>
             </div>
           </div>
-
-          <!-- What I Can Do -->
           <div class="bg-white border border-ink/15 p-6 flex flex-col justify-center">
             <h4 class="text-[10px] font-bold text-ink-muted uppercase tracking-widest mb-5 border-b hairline pb-3">What I Can Do</h4>
             <ul class="space-y-4 text-[13px] font-medium text-ink">
@@ -295,7 +285,6 @@ tailwind.config = {
               <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-brand text-sm"></i>Sales</li>
             </ul>
           </div>
-
         </div>
       </div>
     </div>
@@ -314,9 +303,7 @@ tailwind.config = {
         <p class="text-xl text-ink-light font-light max-w-2xl leading-relaxed">Software, platforms, and operational tools utilized across client operations, workflows, and communication.</p>
       </div>
     </div>
-
     <div class="grid md:grid-cols-3 gap-px bg-ink/10 border border-ink/10">
-
       <div class="bg-white p-10 reveal">
         <div class="flex items-center gap-3 mb-8 border-b hairline pb-4">
           <i class="fa-solid fa-headset text-brand"></i>
@@ -330,7 +317,6 @@ tailwind.config = {
           <li class="flex items-center gap-3"><i class="fa-solid fa-caret-right text-brand/60 text-xs"></i>Case Management Systems</li>
         </ul>
       </div>
-
       <div class="bg-white p-10 reveal delay-100">
         <div class="flex items-center gap-3 mb-8 border-b hairline pb-4">
           <i class="fa-solid fa-briefcase text-brand"></i>
@@ -342,7 +328,6 @@ tailwind.config = {
           <li class="flex items-center gap-3"><i class="fa-solid fa-caret-right text-brand/60 text-xs"></i>Microsoft Excel</li>
         </ul>
       </div>
-
       <div class="bg-white p-10 reveal delay-200">
         <div class="flex items-center gap-3 mb-8 border-b hairline pb-4">
           <i class="fa-solid fa-robot text-brand"></i>
@@ -354,7 +339,6 @@ tailwind.config = {
           <li class="flex items-center gap-3"><i class="fa-solid fa-caret-right text-brand/60 text-xs"></i>Microsoft Copilot</li>
         </ul>
       </div>
-
     </div>
   </div>
 </section>
@@ -380,113 +364,153 @@ tailwind.config = {
       <div class="swipe-track" data-swipe id="engagements-track">
 
         <!-- Engagement 1 -->
-        <article class="swipe-card bg-white border border-ink/15 mr-0">
-          <div class="p-8 h-full flex flex-col">
-            <div class="flex justify-between items-start mb-6 border-b hairline pb-4">
-              <div>
-                <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-1">Healthcare Advocacy</p>
-                <h3 class="text-2xl font-black text-ink tracking-tighter">Teleperformance</h3>
-                <p class="text-[9px] text-ink-muted uppercase tracking-widest mt-1">Pasay City, Philippines</p>
-              </div>
-              <span class="text-[9px] font-bold uppercase tracking-widest text-ink-muted border border-ink/20 px-2 py-1">Jul 2022–Jan 2023</span>
-            </div>
-            <p class="text-sm font-bold text-ink-light uppercase tracking-wide mb-4">Customer Service Advocate (US Healthcare)</p>
-            <ul class="space-y-3 text-xs text-ink-light font-light mt-auto border-t hairline pt-4">
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Assisted members with benefits, eligibility, claims, and billing inquiries</li>
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Explained healthcare plans, coverage details, and authorization requirements</li>
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Resolved concerns through active listening and effective problem-solving</li>
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Scheduled medical appointments, follow-ups, and consultations for members with in-network providers</li>
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Protected sensitive member information and followed compliance procedures</li>
-            </ul>
-          </div>
-        </article>
+<article class="swipe-card bg-white border border-ink/15 mr-0">
+  <div class="p-8 h-full flex flex-col">
+    <div class="flex justify-between items-start mb-6 border-b hairline pb-4 gap-4">
+      <div class="flex items-center gap-4">
+        
+        <!-- UPDATED: Logo Image -->
+        <div class="w-12 h-12 bg-white border border-ink/10 flex items-center justify-center shrink-0 overflow-hidden p-1">
+          <img src="teleperformance.jpg" alt="Teleperformance Logo" class="w-full h-full object-contain">
+        </div>
 
-        <!-- Engagement 2 -->
-        <article class="swipe-card bg-white border border-ink/15 ml-6">
-          <div class="p-8 h-full flex flex-col">
-            <div class="flex justify-between items-start mb-6 border-b hairline pb-4">
-              <div>
-                <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-1">Financial Risk</p>
-                <h3 class="text-2xl font-black text-ink tracking-tighter">Foundever</h3>
-                <p class="text-[9px] text-ink-muted uppercase tracking-widest mt-1">Makati City, Philippines</p>
-              </div>
-              <span class="text-[9px] font-bold uppercase tracking-widest text-ink-muted border border-ink/20 px-2 py-1">Jan 2023–Jan 2024</span>
-            </div>
-            <p class="text-sm font-bold text-ink-light uppercase tracking-wide mb-4">Fraud Specialist (US Financial Bank)</p>
-            <ul class="space-y-3 text-xs text-ink-light font-light mt-auto border-t hairline pt-4">
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Monitored accounts for suspicious and unauthorized activity</li>
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Conducted customer identity verification and security checks</li>
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Investigated fraud alerts and documented case findings</li>
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Contacted customers regarding disputed or suspicious transactions</li>
-            </ul>
-          </div>
-        </article>
+        <div class="flex flex-col">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-1">Healthcare Advocacy</p>
+          <h3 class="text-xl font-black text-ink tracking-tighter leading-none mb-1">Teleperformance</h3>
+          <p class="text-[9px] text-ink-muted uppercase tracking-widest whitespace-nowrap">Pasay City, Philippines</p>
+        </div>
+      </div>
+      <span class="text-[9px] font-bold uppercase tracking-widest text-ink-muted border border-ink/20 px-2 py-1 shrink-0 whitespace-nowrap mt-1">Jul 2022–Jan 2023</span>
+    </div>
+    <p class="text-sm font-bold text-ink-light uppercase tracking-wide mb-4">Customer Service Advocate (US Healthcare)</p>
+    <ul class="space-y-3 text-xs text-ink-light font-light mt-auto border-t hairline pt-4">
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Assisted members with benefits, eligibility, claims, and billing inquiries</li>
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Explained healthcare plans, coverage details, and authorization requirements</li>
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Resolved concerns through active listening and effective problem-solving</li>
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Scheduled medical appointments, follow-ups, and consultations for members with in-network providers</li>
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Protected sensitive member information and followed compliance procedures</li>
+    </ul>
+  </div>
+</article>
+
+       <!-- Engagement 2 -->
+<article class="swipe-card bg-white border border-ink/15 ml-6">
+  <div class="p-8 h-full flex flex-col">
+    <div class="flex justify-between items-start mb-6 border-b hairline pb-4 gap-4">
+      <div class="flex items-center gap-4">
+        
+        <!-- UPDATED: Logo Image -->
+        <div class="w-12 h-12 bg-white border border-ink/10 flex items-center justify-center shrink-0 overflow-hidden p-1">
+          <img src="foundever.jpg" alt="Foundever Logo" class="w-full h-full object-contain">
+        </div>
+
+        <div class="flex flex-col">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-1">Financial Risk</p>
+          <h3 class="text-xl font-black text-ink tracking-tighter leading-none mb-1">Foundever</h3>
+          <p class="text-[9px] text-ink-muted uppercase tracking-widest whitespace-nowrap">Makati City, Philippines</p>
+        </div>
+      </div>
+      <span class="text-[9px] font-bold uppercase tracking-widest text-ink-muted border border-ink/20 px-2 py-1 shrink-0 whitespace-nowrap mt-1">Jan 2023–Jan 2024</span>
+    </div>
+    <p class="text-sm font-bold text-ink-light uppercase tracking-wide mb-4">Fraud Specialist (US Financial Bank)</p>
+    <ul class="space-y-3 text-xs text-ink-light font-light mt-auto border-t hairline pt-4">
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Monitored accounts for suspicious and unauthorized activity</li>
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Conducted customer identity verification and security checks</li>
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Investigated fraud alerts and documented case findings</li>
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Contacted customers regarding disputed or suspicious transactions</li>
+    </ul>
+  </div>
+</article>
 
         <!-- Engagement 3 -->
-        <article class="swipe-card bg-white border border-ink/15 ml-6">
-          <div class="p-8 h-full flex flex-col">
-            <div class="flex justify-between items-start mb-6 border-b hairline pb-4">
-              <div>
-                <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-1">Billing & Sales</p>
-                <h3 class="text-2xl font-black text-ink tracking-tighter">TSI</h3>
-                <p class="text-[9px] text-ink-muted uppercase tracking-widest mt-1">Pasay City, Philippines</p>
-              </div>
-              <span class="text-[9px] font-bold uppercase tracking-widest text-ink-muted border border-ink/20 px-2 py-1">Jan 2024–Jan 2025</span>
-            </div>
-            <p class="text-sm font-bold text-ink-light uppercase tracking-wide mb-4">Billing/Sales Representative (US Utility)</p>
-            <ul class="space-y-3 text-xs text-ink-light font-light mt-auto border-t hairline pt-4">
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Handled billing inquiries through phone and email</li>
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Reviewed accounts, invoices, payments, and billing adjustments</li>
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Resolved discrepancies while maintaining accurate customer records</li>
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Appliance & Wiring Insurance Sales: Educated customers on optional protection plans, successfully selling insurance coverage for home appliances and internal electrical wiring to drive company revenue</li>
-            </ul>
-          </div>
-        </article>
+<article class="swipe-card bg-white border border-ink/15 ml-6">
+  <div class="p-8 h-full flex flex-col">
+    <div class="flex justify-between items-start mb-6 border-b hairline pb-4 gap-4">
+      <div class="flex items-center gap-4">
+        
+        <!-- UPDATED: Logo Image -->
+        <div class="w-12 h-12 bg-white border border-ink/10 flex items-center justify-center shrink-0 overflow-hidden p-1">
+          <img src="TSI.png" alt="TSI Logo" class="w-full h-full object-contain">
+        </div>
+
+        <div class="flex flex-col">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-1">Billing & Sales</p>
+          <h3 class="text-xl font-black text-ink tracking-tighter leading-none mb-1">TSI</h3>
+          <p class="text-[9px] text-ink-muted uppercase tracking-widest whitespace-nowrap">Pasay City, Philippines</p>
+        </div>
+      </div>
+      <span class="text-[9px] font-bold uppercase tracking-widest text-ink-muted border border-ink/20 px-2 py-1 shrink-0 whitespace-nowrap mt-1">Jan 2024–Jan 2025</span>
+    </div>
+    <p class="text-sm font-bold text-ink-light uppercase tracking-wide mb-4">Billing/Sales Representative (US Utility)</p>
+    <ul class="space-y-3 text-xs text-ink-light font-light mt-auto border-t hairline pt-4">
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Handled billing inquiries through phone and email</li>
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Reviewed accounts, invoices, payments, and billing adjustments</li>
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Resolved discrepancies while maintaining accurate customer records</li>
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Appliance & Wiring Insurance Sales: Educated customers on optional protection plans, successfully selling insurance coverage for home appliances and internal electrical wiring to drive company revenue</li>
+    </ul>
+  </div>
+</article>
 
         <!-- Engagement 4 -->
-        <article class="swipe-card bg-white border border-ink/15 ml-6">
-          <div class="p-8 h-full flex flex-col">
-            <div class="flex justify-between items-start mb-6 border-b hairline pb-4">
-              <div>
-                <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-1">B2B Retention</p>
-                <h3 class="text-2xl font-black text-ink tracking-tighter">TSD Global</h3>
-                <p class="text-[9px] text-ink-muted uppercase tracking-widest mt-1">Taguig City, Philippines</p>
-              </div>
-              <span class="text-[9px] font-bold uppercase tracking-widest text-ink-muted border border-ink/20 px-2 py-1">Jan 2025–Aug 2025</span>
-            </div>
-            <p class="text-sm font-bold text-ink-light uppercase tracking-wide mb-4">B2B Sales and Retention Associate (Major US Telco Business Account)</p>
-            <ul class="space-y-3 text-xs text-ink-light font-light mt-auto border-t hairline pt-4">
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Managed B2B client relationships and retention activities</li>
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Addressed concerns and resolved account-related issues</li>
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Identified churn risks and recommended retention strategies</li>
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Coordinated with teams to improve client experiences</li>
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Maintained accurate records of client interactions</li>
-            </ul>
-          </div>
-        </article>
+<article class="swipe-card bg-white border border-ink/15 ml-6">
+  <div class="p-8 h-full flex flex-col">
+    <div class="flex justify-between items-start mb-6 border-b hairline pb-4 gap-4">
+      <div class="flex items-center gap-4">
+        
+        <!-- UPDATED: Logo Image -->
+        <div class="w-12 h-12 bg-white border border-ink/10 flex items-center justify-center shrink-0 overflow-hidden p-1">
+          <img src="TSD.png" alt="TSD Global Logo" class="w-full h-full object-contain">
+        </div>
 
-        <!-- Engagement 5 -->
-        <article class="swipe-card bg-white border border-ink/15 ml-6">
-          <div class="p-8 h-full flex flex-col">
-            <div class="flex justify-between items-start mb-6 border-b hairline pb-4">
-              <div>
-                <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-1">SME Leadership</p>
-                <h3 class="text-2xl font-black text-ink tracking-tighter">EXL</h3>
-                <p class="text-[9px] text-ink-muted uppercase tracking-widest mt-1">Pasay City, Philippines</p>
-              </div>
-              <span class="text-[9px] font-bold uppercase tracking-widest text-ink-muted border border-ink/20 px-2 py-1">Aug 2025–Present</span>
-            </div>
-            <p class="text-sm font-bold text-ink-light uppercase tracking-wide mb-4">Subject Matter Expert & Insurance Account Specialist (AU Leading Multi-National Insurance Account)</p>
-            <ul class="space-y-3 text-xs text-ink-light font-light mt-auto border-t hairline pt-4">
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Provided expert guidance on complex process-related issues</li>
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Delivered coaching, mentoring, and refresher training</li>
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Monitored quality, productivity, and compliance performance</li>
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Updated procedures and maintained process documentation</li>
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Collaborated with operations and client stakeholders</li>
-              <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Recommended improvements to enhance efficiency and accuracy</li>
-            </ul>
-          </div>
-        </article>
+        <div class="flex flex-col">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-1">B2B Retention</p>
+          <h3 class="text-xl font-black text-ink tracking-tighter leading-none mb-1">TSD Global</h3>
+          <p class="text-[9px] text-ink-muted uppercase tracking-widest whitespace-nowrap">Taguig City, Philippines</p>
+        </div>
+      </div>
+      <span class="text-[9px] font-bold uppercase tracking-widest text-ink-muted border border-ink/20 px-2 py-1 shrink-0 whitespace-nowrap mt-1">Jan 2025–Aug 2025</span>
+    </div>
+    <p class="text-sm font-bold text-ink-light uppercase tracking-wide mb-4">B2B Sales and Retention Associate (Major US Telco Business Account)</p>
+    <ul class="space-y-3 text-xs text-ink-light font-light mt-auto border-t hairline pt-4">
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Managed B2B client relationships and retention activities</li>
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Addressed concerns and resolved account-related issues</li>
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Identified churn risks and recommended retention strategies</li>
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Coordinated with teams to improve client experiences</li>
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Maintained accurate records of client interactions</li>
+    </ul>
+  </div>
+</article>
+
+       <!-- Engagement 5 -->
+<article class="swipe-card bg-white border border-ink/15 ml-6">
+  <div class="p-8 h-full flex flex-col">
+    <div class="flex justify-between items-start mb-6 border-b hairline pb-4 gap-4">
+      <div class="flex items-center gap-4">
+        
+        <!-- UPDATED: Logo Image -->
+        <div class="w-12 h-12 bg-white border border-ink/10 flex items-center justify-center shrink-0 overflow-hidden p-1">
+          <img src="EXL.png" alt="EXL Logo" class="w-full h-full object-contain">
+        </div>
+
+        <div class="flex flex-col">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-1">SME Leadership</p>
+          <h3 class="text-xl font-black text-ink tracking-tighter leading-none mb-1">EXL</h3>
+          <p class="text-[9px] text-ink-muted uppercase tracking-widest whitespace-nowrap">Pasay City, Philippines</p>
+        </div>
+      </div>
+      <span class="text-[9px] font-bold uppercase tracking-widest text-ink-muted border border-ink/20 px-2 py-1 shrink-0 whitespace-nowrap mt-1">Aug 2025–Present</span>
+    </div>
+    <p class="text-sm font-bold text-ink-light uppercase tracking-wide mb-4">Subject Matter Expert & Insurance Account Specialist (AU Leading Multi-National Insurance Account)</p>
+    <ul class="space-y-3 text-xs text-ink-light font-light mt-auto border-t hairline pt-4">
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Provided expert guidance on complex process-related issues</li>
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Delivered coaching, mentoring, and refresher training</li>
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Monitored quality, productivity, and compliance performance</li>
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Updated procedures and maintained process documentation</li>
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Collaborated with operations and client stakeholders</li>
+      <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Recommended improvements to enhance efficiency and accuracy</li>
+    </ul>
+  </div>
+</article>
 
       </div>
     </div>
@@ -510,8 +534,6 @@ tailwind.config = {
     </div>
 
     <div class="grid md:grid-cols-12 gap-px bg-ink/10 border border-ink/10">
-
-      <!-- EXL -->
       <div class="md:col-span-6 bg-white p-10 reveal">
         <div class="flex items-center justify-between mb-6">
           <p class="text-[10px] font-bold uppercase tracking-widest text-brand">EXL · Risk</p>
@@ -528,7 +550,6 @@ tailwind.config = {
         </ul>
       </div>
 
-      <!-- TSI -->
       <div class="md:col-span-6 bg-white p-10 reveal delay-100">
         <div class="flex items-center justify-between mb-6">
           <p class="text-[10px] font-bold uppercase tracking-widest text-brand">TSI · Utilities</p>
@@ -544,7 +565,6 @@ tailwind.config = {
         </ul>
       </div>
 
-      <!-- TSD -->
       <div class="md:col-span-4 bg-white p-8 reveal">
         <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-6">TSD Global</p>
         <p class="text-5xl font-black text-ink tracking-tighter leading-none mb-2">34%</p>
@@ -557,7 +577,6 @@ tailwind.config = {
         </ul>
       </div>
 
-      <!-- Foundever -->
       <div class="md:col-span-4 bg-white p-8 reveal delay-100">
         <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-6">Foundever</p>
         <p class="text-5xl font-black text-ink tracking-tighter leading-none mb-2">98%</p>
@@ -570,7 +589,6 @@ tailwind.config = {
         </ul>
       </div>
 
-      <!-- Teleperformance -->
       <div class="md:col-span-4 bg-white p-8 reveal delay-200">
         <p class="text-[10px] font-bold uppercase tracking-widest text-brand mb-6">Teleperformance</p>
         <p class="text-5xl font-black text-ink tracking-tighter leading-none mb-2">99.98%</p>
@@ -581,7 +599,6 @@ tailwind.config = {
           <li class="flex gap-3"><i class="fa-solid fa-square text-brand/40 mt-1.5 text-[5px]"></i>Maintained a top-tier CSAT rating of 99.98% by delivering empathetic, clear, and structured support</li>
         </ul>
       </div>
-
     </div>
   </div>
 </section>
@@ -599,36 +616,30 @@ tailwind.config = {
       </div>
     </div>
 
-    <div class="swipe-wrap on-parchment mb-2">
-      <div class="swipe-track" id="reports-tabs">
-        <button class="report-tab swipe-card bg-white border border-ink/15 p-5 text-left mr-3" data-report="0" aria-selected="true" role="tab">
-          <p class="tab-num text-[10px] font-bold uppercase tracking-widest text-brand mb-2">Report 01</p>
-          <p class="tab-title text-sm font-bold text-ink tracking-tight leading-snug">Prescription Cost & Deductible</p>
-        </button>
-        <button class="report-tab swipe-card bg-white border border-ink/15 p-5 text-left mr-3" data-report="1" aria-selected="false" role="tab">
-          <p class="tab-num text-[10px] font-bold uppercase tracking-widest text-brand mb-2">Report 02</p>
-          <p class="tab-title text-sm font-bold text-ink tracking-tight leading-snug">Lost Card & Unauthorized Transaction</p>
-        </button>
-        <button class="report-tab swipe-card bg-white border border-ink/15 p-5 text-left mr-3" data-report="2" aria-selected="false" role="tab">
-          <p class="tab-num text-[10px] font-bold uppercase tracking-widest text-brand mb-2">Report 03</p>
-          <p class="tab-title text-sm font-bold text-ink tracking-tight leading-snug">Disconnection Notice &amp; Sales Save</p>
-        </button>
-        <button class="report-tab swipe-card bg-white border border-ink/15 p-5 text-left mr-3" data-report="3" aria-selected="false" role="tab">
-          <p class="tab-num text-[10px] font-bold uppercase tracking-widest text-brand mb-2">Report 04</p>
-          <p class="tab-title text-sm font-bold text-ink tracking-tight leading-snug">Billing Dispute &amp; Retention</p>
-        </button>
-        <button class="report-tab swipe-card bg-white border border-ink/15 p-5 text-left" data-report="4" aria-selected="false" role="tab">
-          <p class="tab-num text-[10px] font-bold uppercase tracking-widest text-brand mb-2">Report 05</p>
-          <p class="tab-title text-sm font-bold text-ink tracking-tight leading-snug">Coaching &amp; Team Performance</p>
-        </button>
-      </div>
-    </div>
-    <div class="swipe-progress-track mb-10">
-      <div class="swipe-progress-bar" data-progress-for="reports-tabs"></div>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-10 reveal" id="reports-tabs">
+      <button class="report-tab p-4 text-left" data-report="0" aria-selected="true" role="tab">
+        <p class="tab-num text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">Report 01</p>
+        <p class="tab-title text-sm font-bold text-ink leading-snug">Prescription Cost & Deductible</p>
+      </button>
+      <button class="report-tab p-4 text-left" data-report="1" aria-selected="false" role="tab">
+        <p class="tab-num text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">Report 02</p>
+        <p class="tab-title text-sm font-bold text-ink leading-snug">Lost Card & Unauthorized Transaction</p>
+      </button>
+      <button class="report-tab p-4 text-left" data-report="2" aria-selected="false" role="tab">
+        <p class="tab-num text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">Report 03</p>
+        <p class="tab-title text-sm font-bold text-ink leading-snug">Disconnection Notice &amp; Sales Save</p>
+      </button>
+      <button class="report-tab p-4 text-left" data-report="3" aria-selected="false" role="tab">
+        <p class="tab-num text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">Report 04</p>
+        <p class="tab-title text-sm font-bold text-ink leading-snug">Billing Dispute &amp; Retention</p>
+      </button>
+      <button class="report-tab p-4 text-left" data-report="4" aria-selected="false" role="tab">
+        <p class="tab-num text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">Report 05</p>
+        <p class="tab-title text-sm font-bold text-ink leading-snug">Coaching &amp; Team Performance</p>
+      </button>
     </div>
 
     <div class="bg-white border border-ink/15 reveal">
-
       <!-- Report 1 -->
       <div class="report-panel" data-panel="0">
         <div class="p-8 lg:p-12 border-b hairline">
@@ -655,52 +666,101 @@ tailwind.config = {
 
         <div class="p-8 lg:p-12 bg-parchment/40 border-b hairline">
           <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-6 flex items-center gap-3"><i class="fa-solid fa-comments text-brand"></i> Call Scenario</h4>
-          <!-- Chat container full width -->
           <div class="space-y-6 text-sm w-full">
             <div class="flex flex-col items-start">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Member</span>
-              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">I'm having trouble affording my medication. I was surprised by the price at the pharmacy because I thought my insurance would cover it.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-user text-[10px]"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Customer</span>
+              </div>
+              <div class="chat-bubble-member p-4 max-w-[85%] font-light leading-relaxed ml-8">I'm having trouble affording my medication. I was surprised by the price at the pharmacy because I thought my insurance would cover it.</div>
             </div>
             <div class="flex flex-col items-end">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
-              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">I understand your concern, and I'm sorry you're experiencing this. I'd be happy to look into your prescription coverage and explore what options may be available. Before we proceed, may I verify your information?</div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Representative</span>
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-headset text-[10px]"></i>
+                </div>
+              </div>
+              <div class="chat-bubble-rep p-4 max-w-[85%] font-light leading-relaxed mr-8">I understand your concern, and I'm sorry you're experiencing this. I'd be happy to look into your prescription coverage and explore what options may be available. Before we proceed, may I verify your information?</div>
             </div>
             <div class="flex flex-col items-start">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Member</span>
-              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">Sure.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-user text-[10px]"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Customer</span>
+              </div>
+              <div class="chat-bubble-member p-4 max-w-[85%] font-light leading-relaxed ml-8">Sure.</div>
             </div>
             <div class="flex flex-col items-end">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
-              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">Thank you for completing the verification. Please allow me a moment while I review your benefits.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Representative</span>
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-headset text-[10px]"></i>
+                </div>
+              </div>
+              <div class="chat-bubble-rep p-4 max-w-[85%] font-light leading-relaxed mr-8">Thank you for completing the verification. Please allow me a moment while I review your benefits.</div>
             </div>
             <div class="flex flex-col items-end">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
-              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">After reviewing your benefits, I found that you haven't met your applicable prescription drug deductible yet, which is why you're currently responsible for the medication cost.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Representative</span>
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-headset text-[10px]"></i>
+                </div>
+              </div>
+              <div class="chat-bubble-rep p-4 max-w-[85%] font-light leading-relaxed mr-8">After reviewing your benefits, I found that you haven't met your applicable prescription drug deductible yet, which is why you're currently responsible for the medication cost.</div>
             </div>
             <div class="flex flex-col items-start">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Member</span>
-              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">I really need this medication, but I can't afford to keep paying that much.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-user text-[10px]"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Customer</span>
+              </div>
+              <div class="chat-bubble-member p-4 max-w-[85%] font-light leading-relaxed ml-8">I really need this medication, but I can't afford to keep paying that much.</div>
             </div>
             <div class="flex flex-col items-end">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
-              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">I completely understand. Let me explore the available resources to see if there's another option that may help reduce your expenses.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Representative</span>
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-headset text-[10px]"></i>
+                </div>
+              </div>
+              <div class="chat-bubble-rep p-4 max-w-[85%] font-light leading-relaxed mr-8">I completely understand. Let me explore the available resources to see if there's another option that may help reduce your expenses.</div>
             </div>
             <div class="flex flex-col items-end">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
-              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">I found a potentially lower-cost alternative medication with a similar therapeutic purpose. I recommend discussing it with your prescribing physician to determine if it's medically appropriate for you.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Representative</span>
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-headset text-[10px]"></i>
+                </div>
+              </div>
+              <div class="chat-bubble-rep p-4 max-w-[85%] font-light leading-relaxed mr-8">I found a potentially lower-cost alternative medication with a similar therapeutic purpose. I recommend discussing it with your prescribing physician to determine if it's medically appropriate for you.</div>
             </div>
             <div class="flex flex-col items-start">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Member</span>
-              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">That would be really helpful. Thank you for looking into that for me.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-user text-[10px]"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Customer</span>
+              </div>
+              <div class="chat-bubble-member p-4 max-w-[85%] font-light leading-relaxed ml-8">That would be really helpful. Thank you for looking into that for me.</div>
             </div>
             <div class="flex flex-col items-end">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
-              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">You're very welcome! I'm glad I could help provide another option.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Representative</span>
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-headset text-[10px]"></i>
+                </div>
+              </div>
+              <div class="chat-bubble-rep p-4 max-w-[85%] font-light leading-relaxed mr-8">You're very welcome! I'm glad I could help provide another option.</div>
             </div>
           </div>
         </div>
 
-        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10">
+        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10 border-b hairline">
           <div>
             <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Outcome</h4>
             <p class="text-sm text-ink-light font-light leading-relaxed">Successfully addressed the member's concern by clarifying her prescription benefits and identifying a potential cost-saving alternative. The member appreciated the initiative and expressed gratitude for the assistance provided.</p>
@@ -717,6 +777,12 @@ tailwind.config = {
               <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Active Listening</span>
             </div>
           </div>
+        </div>
+
+        <div class="p-6 lg:px-12 border-t border-ink/10 bg-parchment/20 flex justify-between items-center">
+          <button class="report-nav-prev text-xs font-bold uppercase tracking-widest text-ink-muted opacity-30 cursor-not-allowed" data-index="0" disabled>← Prev Report</button>
+          <span class="text-[10px] font-bold text-ink-muted uppercase tracking-widest">Report 01 of 05</span>
+          <button class="report-nav-next text-xs font-bold uppercase tracking-widest text-brand hover:text-brand-dark transition-colors" data-index="0">Next Report →</button>
         </div>
       </div>
 
@@ -747,37 +813,72 @@ tailwind.config = {
           <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-6 flex items-center gap-3"><i class="fa-solid fa-comments text-brand"></i> Call Scenario</h4>
           <div class="space-y-6 text-sm w-full">
             <div class="flex flex-col items-start">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
-              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">I lost my credit card, and now there's an unauthorized transaction on my account! Why wasn't this transaction declined? I don't want to go through verification again!</div>
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-user text-[10px]"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Customer</span>
+              </div>
+              <div class="chat-bubble-member p-4 max-w-[85%] font-light leading-relaxed ml-8">I lost my credit card, and now there's an unauthorized transaction on my account! Why wasn't this transaction declined? I don't want to go through verification again!</div>
             </div>
             <div class="flex flex-col items-end">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
-              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">I completely understand your frustration. If I were in your situation, I would feel the same way. Please allow me to help you sort this out.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Representative</span>
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-headset text-[10px]"></i>
+                </div>
+              </div>
+              <div class="chat-bubble-rep p-4 max-w-[85%] font-light leading-relaxed mr-8">I completely understand your frustration. If I were in your situation, I would feel the same way. Please allow me to help you sort this out.</div>
             </div>
             <div class="flex flex-col items-start">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
-              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">Why do you still need to verify me? I just want this fixed!</div>
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-user text-[10px]"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Customer</span>
+              </div>
+              <div class="chat-bubble-member p-4 max-w-[85%] font-light leading-relaxed ml-8">Why do you still need to verify me? I just want this fixed!</div>
             </div>
             <div class="flex flex-col items-end">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
-              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">I understand. Verification is an important security measure to ensure we're speaking with the authorized account holder and to protect your account from unauthorized access. Once we complete this step, I'll be able to assist you with reporting the transaction and securing your card.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Representative</span>
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-headset text-[10px]"></i>
+                </div>
+              </div>
+              <div class="chat-bubble-rep p-4 max-w-[85%] font-light leading-relaxed mr-8">I understand. Verification is an important security measure to ensure we're speaking with the authorized account holder and to protect your account from unauthorized access. Once we complete this step, I'll be able to assist you with reporting the transaction and securing your card.</div>
             </div>
             <div class="flex flex-col items-start">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
-              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">Alright, let's proceed.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-user text-[10px]"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Customer</span>
+              </div>
+              <div class="chat-bubble-member p-4 max-w-[85%] font-light leading-relaxed ml-8">Alright, let's proceed.</div>
             </div>
             <div class="flex flex-col items-end">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
-              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">Thank you for your cooperation. I've successfully reported the unauthorized transaction, locked your lost card, and processed a replacement card for you.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Representative</span>
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-headset text-[10px]"></i>
+                </div>
+              </div>
+              <div class="chat-bubble-rep p-4 max-w-[85%] font-light leading-relaxed mr-8">Thank you for your cooperation. I've successfully reported the unauthorized transaction, locked your lost card, and processed a replacement card for you.</div>
             </div>
             <div class="flex flex-col items-start">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
-              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">Thank you for helping me. I'll make sure to give you a good survey after this call.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-user text-[10px]"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Customer</span>
+              </div>
+              <div class="chat-bubble-member p-4 max-w-[85%] font-light leading-relaxed ml-8">Thank you for helping me. I'll make sure to give you a good survey after this call.</div>
             </div>
           </div>
         </div>
 
-        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10">
+        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10 border-b hairline">
           <div>
             <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Outcome</h4>
             <p class="text-sm text-ink-light font-light leading-relaxed">Successfully addressed the customer's concerns and secured the compromised card. The customer ended the call satisfied and proactively expressed his intention to provide a positive survey.</p>
@@ -794,6 +895,12 @@ tailwind.config = {
               <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Account Security</span>
             </div>
           </div>
+        </div>
+
+        <div class="p-6 lg:px-12 border-t border-ink/10 bg-parchment/20 flex justify-between items-center">
+          <button class="report-nav-prev text-xs font-bold uppercase tracking-widest text-brand hover:text-brand-dark transition-colors" data-index="1">← Prev Report</button>
+          <span class="text-[10px] font-bold text-ink-muted uppercase tracking-widest">Report 02 of 05</span>
+          <button class="report-nav-next text-xs font-bold uppercase tracking-widest text-brand hover:text-brand-dark transition-colors" data-index="1">Next Report →</button>
         </div>
       </div>
 
@@ -826,45 +933,90 @@ tailwind.config = {
           <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-6 flex items-center gap-3"><i class="fa-solid fa-comments text-brand"></i> Call Scenario</h4>
           <div class="space-y-6 text-sm w-full">
             <div class="flex flex-col items-start">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
-              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">Please, I really need your help. My electricity is scheduled for disconnection tomorrow, and my father is using an oxygen machine. We can pay the bill, but we just need four more days.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-user text-[10px]"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Customer</span>
+              </div>
+              <div class="chat-bubble-member p-4 max-w-[85%] font-light leading-relaxed ml-8">Please, I really need your help. My electricity is scheduled for disconnection tomorrow, and my father is using an oxygen machine. We can pay the bill, but we just need four more days.</div>
             </div>
             <div class="flex flex-col items-end">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
-              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">I completely understand your situation, and I know how important it is to keep your electricity running, especially with your father's medical needs. Let me review your account and see what options are available.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Representative</span>
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-headset text-[10px]"></i>
+                </div>
+              </div>
+              <div class="chat-bubble-rep p-4 max-w-[85%] font-light leading-relaxed mr-8">I completely understand your situation, and I know how important it is to keep your electricity running, especially with your father's medical needs. Let me review your account and see what options are available.</div>
             </div>
             <div class="flex flex-col items-end">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
-              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">After completing verification, I've checked your account for available installment arrangements. Unfortunately, you've already reached the maximum limit for that option. However, let me check if you're eligible for a courtesy extension.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Representative</span>
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-headset text-[10px]"></i>
+                </div>
+              </div>
+              <div class="chat-bubble-rep p-4 max-w-[85%] font-light leading-relaxed mr-8">After completing verification, I've checked your account for available installment arrangements. Unfortunately, you've already reached the maximum limit for that option. However, let me check if you're eligible for a courtesy extension.</div>
             </div>
             <div class="flex flex-col items-end">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
-              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">Good news! You're still eligible for a courtesy extension, and I've successfully processed it to give you additional time to settle your balance.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Representative</span>
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-headset text-[10px]"></i>
+                </div>
+              </div>
+              <div class="chat-bubble-rep p-4 max-w-[85%] font-light leading-relaxed mr-8">Good news! You're still eligible for a courtesy extension, and I've successfully processed it to give you additional time to settle your balance.</div>
             </div>
             <div class="flex flex-col items-start">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
-              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">Thank you so much! I promise we'll pay as soon as we have the money.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-user text-[10px]"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Customer</span>
+              </div>
+              <div class="chat-bubble-member p-4 max-w-[85%] font-light leading-relaxed ml-8">Thank you so much! I promise we'll pay as soon as we have the money.</div>
             </div>
             <div class="flex flex-col items-end">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
-              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">You're very welcome! Also, since storms are common in your area, I'd like to introduce an optional home wiring protection plan that may help protect your electrical wiring. Would you be interested in learning more?</div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Representative</span>
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-headset text-[10px]"></i>
+                </div>
+              </div>
+              <div class="chat-bubble-rep p-4 max-w-[85%] font-light leading-relaxed mr-8">You're very welcome! Also, since storms are common in your area, I'd like to introduce an optional home wiring protection plan that may help protect your electrical wiring. Would you be interested in learning more?</div>
             </div>
             <div class="flex flex-col items-start">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
-              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">Yes, that sounds helpful. I'd like to get that.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-user text-[10px]"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Customer</span>
+              </div>
+              <div class="chat-bubble-member p-4 max-w-[85%] font-light leading-relaxed ml-8">Yes, that sounds helpful. I'd like to get that.</div>
             </div>
             <div class="flex flex-col items-end">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
-              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">Absolutely! Let me walk you through the coverage and enrollment details.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Representative</span>
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-headset text-[10px]"></i>
+                </div>
+              </div>
+              <div class="chat-bubble-rep p-4 max-w-[85%] font-light leading-relaxed mr-8">Absolutely! Let me walk you through the coverage and enrollment details.</div>
             </div>
             <div class="flex flex-col items-start">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
-              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">Thank you again. I'll definitely leave you a good survey for helping us.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-user text-[10px]"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Customer</span>
+              </div>
+              <div class="chat-bubble-member p-4 max-w-[85%] font-light leading-relaxed ml-8">Thank you again. I'll definitely leave you a good survey for helping us.</div>
             </div>
           </div>
         </div>
 
-        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10">
+        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10 border-b hairline">
           <div>
             <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Outcome</h4>
             <p class="text-sm text-ink-light font-light leading-relaxed">Successfully provided the customer with additional time to settle the outstanding balance and avoid immediate disconnection. Additionally, converted the conversation into a successful insurance product enrollment. The customer expressed gratitude and proactively promised to provide a positive survey.</p>
@@ -882,6 +1034,12 @@ tailwind.config = {
               <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Customer Relationship Management</span>
             </div>
           </div>
+        </div>
+
+        <div class="p-6 lg:px-12 border-t border-ink/10 bg-parchment/20 flex justify-between items-center">
+          <button class="report-nav-prev text-xs font-bold uppercase tracking-widest text-brand hover:text-brand-dark transition-colors" data-index="2">← Prev Report</button>
+          <span class="text-[10px] font-bold text-ink-muted uppercase tracking-widest">Report 03 of 05</span>
+          <button class="report-nav-next text-xs font-bold uppercase tracking-widest text-brand hover:text-brand-dark transition-colors" data-index="2">Next Report →</button>
         </div>
       </div>
 
@@ -914,37 +1072,72 @@ tailwind.config = {
           <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-6 flex items-center gap-3"><i class="fa-solid fa-comments text-brand"></i> Call Scenario</h4>
           <div class="space-y-6 text-sm w-full">
             <div class="flex flex-col items-start">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
-              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">I was told my bill would go down if I added a smartwatch, but now my bill is even higher. I want to cancel all my lines.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-user text-[10px]"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Customer</span>
+              </div>
+              <div class="chat-bubble-member p-4 max-w-[85%] font-light leading-relaxed ml-8">I was told my bill would go down if I added a smartwatch, but now my bill is even higher. I want to cancel all my lines.</div>
             </div>
             <div class="flex flex-col items-end">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
-              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">I sincerely apologize for the confusion and for the information you were previously given. I understand why you're frustrated. Let me verify your account and review the charges so I can see what happened and what options are available.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Representative</span>
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-headset text-[10px]"></i>
+                </div>
+              </div>
+              <div class="chat-bubble-rep p-4 max-w-[85%] font-light leading-relaxed mr-8">I sincerely apologize for the confusion and for the information you were previously given. I understand why you're frustrated. Let me verify your account and review the charges so I can see what happened and what options are available.</div>
             </div>
             <div class="flex flex-col items-start">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
-              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">I just want to cancel everything. This isn't what I agreed to.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-user text-[10px]"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Customer</span>
+              </div>
+              <div class="chat-bubble-member p-4 max-w-[85%] font-light leading-relaxed ml-8">I just want to cancel everything. This isn't what I agreed to.</div>
             </div>
             <div class="flex flex-col items-end">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
-              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">I understand your decision. After reviewing your account, I found that the discount was applied when the smartwatch was added, but it was scheduled to reflect on your next billing cycle. I'm sorry this wasn't properly explained to you. Before we proceed with cancellation, may I review your current plans and see if there are other ways to help lower your monthly bill?</div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Representative</span>
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-headset text-[10px]"></i>
+                </div>
+              </div>
+              <div class="chat-bubble-rep p-4 max-w-[85%] font-light leading-relaxed mr-8">I understand your decision. After reviewing your account, I found that the discount was applied when the smartwatch was added, but it was scheduled to reflect on your next billing cycle. I'm sorry this wasn't properly explained to you. Before we proceed with cancellation, may I review your current plans and see if there are other ways to help lower your monthly bill?</div>
             </div>
             <div class="flex flex-col items-start">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
-              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">Okay, what can you do?</div>
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-user text-[10px]"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Customer</span>
+              </div>
+              <div class="chat-bubble-member p-4 max-w-[85%] font-light leading-relaxed ml-8">Okay, what can you do?</div>
             </div>
             <div class="flex flex-col items-end">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Representative</span>
-              <div class="chat-bubble-rep p-5 max-w-[90%] font-light leading-relaxed">I reviewed each line individually and found opportunities to adjust some of your plans and apply available discounts to eligible lines. These changes can help reduce your monthly expenses while keeping your services active.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Representative</span>
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-headset text-[10px]"></i>
+                </div>
+              </div>
+              <div class="chat-bubble-rep p-4 max-w-[85%] font-light leading-relaxed mr-8">I reviewed each line individually and found opportunities to adjust some of your plans and apply available discounts to eligible lines. These changes can help reduce your monthly expenses while keeping your services active.</div>
             </div>
             <div class="flex flex-col items-start">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-2">Customer</span>
-              <div class="chat-bubble-member p-5 max-w-[90%] font-light leading-relaxed">That sounds better. I'll keep the lines.</div>
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-6 h-6 border border-ink/20 bg-white flex items-center justify-center text-ink-muted">
+                  <i class="fa-solid fa-user text-[10px]"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Customer</span>
+              </div>
+              <div class="chat-bubble-member p-4 max-w-[85%] font-light leading-relaxed ml-8">That sounds better. I'll keep the lines.</div>
             </div>
           </div>
         </div>
 
-        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10">
+        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10 border-b hairline">
           <div>
             <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Outcome</h4>
             <p class="text-sm text-ink-light font-light leading-relaxed">The customer understood the billing situation and was satisfied with the adjustments made to the account. Instead of proceeding with cancellation, the customer decided to keep all lines active.</p>
@@ -962,6 +1155,12 @@ tailwind.config = {
               <span class="text-[9px] font-bold uppercase tracking-widest bg-parchment text-ink px-3 py-1.5 border border-ink/10">Sales & Retention Strategies</span>
             </div>
           </div>
+        </div>
+
+        <div class="p-6 lg:px-12 border-t border-ink/10 bg-parchment/20 flex justify-between items-center">
+          <button class="report-nav-prev text-xs font-bold uppercase tracking-widest text-brand hover:text-brand-dark transition-colors" data-index="3">← Prev Report</button>
+          <span class="text-[10px] font-bold text-ink-muted uppercase tracking-widest">Report 04 of 05</span>
+          <button class="report-nav-next text-xs font-bold uppercase tracking-widest text-brand hover:text-brand-dark transition-colors" data-index="3">Next Report →</button>
         </div>
       </div>
 
@@ -989,7 +1188,7 @@ tailwind.config = {
           </div>
         </div>
 
-        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10">
+        <div class="p-8 lg:p-12 grid lg:grid-cols-2 gap-10 border-b hairline">
           <div>
             <h4 class="text-[11px] font-bold tracking-widest text-ink-muted uppercase mb-4">Outcome</h4>
             <p class="text-sm text-ink-light font-light leading-relaxed">The agent gradually improved his understanding of the processes and became more confident in handling daily tasks. His Quality Assurance (QA) performance improved, and he was able to keep up with his teammates while performing his responsibilities more effectively.</p>
@@ -1008,6 +1207,12 @@ tailwind.config = {
             </div>
           </div>
         </div>
+
+        <div class="p-6 lg:px-12 border-t border-ink/10 bg-parchment/20 flex justify-between items-center">
+          <button class="report-nav-prev text-xs font-bold uppercase tracking-widest text-brand hover:text-brand-dark transition-colors" data-index="4">← Prev Report</button>
+          <span class="text-[10px] font-bold text-ink-muted uppercase tracking-widest">Report 05 of 05</span>
+          <button class="report-nav-next text-xs font-bold uppercase tracking-widest text-ink-muted opacity-30 cursor-not-allowed" data-index="4" disabled>Next Report →</button>
+        </div>
       </div>
 
     </div>
@@ -1018,7 +1223,6 @@ tailwind.config = {
 <section id="contact" class="py-24 bg-vellum">
   <div class="max-w-[1400px] mx-auto px-6 lg:px-12">
     <div class="grid lg:grid-cols-12 gap-16 lg:gap-24">
-
       <div class="lg:col-span-5 reveal">
         <span class="section-label">06 / Brief</span>
         <h2 class="text-4xl lg:text-5xl font-black text-ink tracking-tighter mt-4 leading-[1.05] mb-8">Get In Touch</h2>
@@ -1027,7 +1231,7 @@ tailwind.config = {
         <div class="space-y-6 mb-12">
           <a href="tel:+639995786676" class="flex items-center gap-5 group">
             <div class="w-12 h-12 border border-ink/20 bg-white flex items-center justify-center text-ink group-hover:bg-brand group-hover:text-white group-hover:border-brand transition-colors">
-              <i class="fa-solid fa-phone text-sm"></i>
+              <i class="fa-solid fa-phone text-base"></i>
             </div>
             <div>
               <p class="text-[10px] font-bold text-ink-muted uppercase tracking-widest mb-1">Phone</p>
@@ -1036,7 +1240,7 @@ tailwind.config = {
           </a>
           <a href="tel:+639995786676" class="flex items-center gap-5 group">
             <div class="w-12 h-12 border border-ink/20 bg-white flex items-center justify-center text-ink group-hover:bg-brand group-hover:text-white group-hover:border-brand transition-colors">
-              <i class="fa-brands fa-whatsapp text-sm"></i>
+              <i class="fa-brands fa-whatsapp text-base"></i>
             </div>
             <div>
               <p class="text-[10px] font-bold text-ink-muted uppercase tracking-widest mb-1">What's App</p>
@@ -1045,7 +1249,7 @@ tailwind.config = {
           </a>
           <a href="mailto:balmesjohnfxn@gmail.com" class="flex items-center gap-5 group">
             <div class="w-12 h-12 border border-ink/20 bg-white flex items-center justify-center text-ink group-hover:bg-brand group-hover:text-white group-hover:border-brand transition-colors">
-              <i class="fa-solid fa-envelope text-sm"></i>
+              <i class="fa-solid fa-envelope text-base"></i>
             </div>
             <div>
               <p class="text-[10px] font-bold text-ink-muted uppercase tracking-widest mb-1">Email</p>
@@ -1113,6 +1317,42 @@ tailwind.config = {
   </div>
 </footer>
 
+<!-- ============================================== VIEW CV MODAL ============================================== -->
+<div id="cv-modal" class="fixed inset-0 z-[100] hidden bg-ink/80 backdrop-blur-sm flex items-center justify-center p-4 lg:p-8">
+  <div class="bg-white border border-ink/20 w-full max-w-5xl h-[90vh] flex flex-col shadow-2xl relative">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between p-4 border-b hairline bg-parchment">
+      <div class="flex items-center gap-3">
+        <i class="fa-regular fa-file-pdf text-brand text-xl"></i>
+        <h3 class="text-lg font-black text-ink tracking-tight">Curriculum Vitae</h3>
+      </div>
+      <div class="flex items-center gap-2 lg:gap-3">
+        <button onclick="printCV()" class="text-[10px] font-bold uppercase tracking-widest text-ink-muted hover:text-brand transition-colors border border-ink/20 px-3 py-2 flex items-center gap-2 bg-white">
+          <i class="fa-solid fa-print"></i> <span class="hidden sm:inline">Print</span>
+        </button>
+        <a href="JOHN'S VA RESUME.pdf" download class="text-[10px] font-bold uppercase tracking-widest text-white bg-brand hover:bg-brand-dark transition-colors px-3 py-2 flex items-center gap-2">
+          <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Download</span>
+        </a>
+        <button onclick="closeCVModal()" class="ml-2 w-8 h-8 flex items-center justify-center hover:bg-ink hover:text-white transition-colors border border-ink/20">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Modal Body (PDF Viewer) -->
+    <div class="flex-1 bg-gray-100 relative w-full h-full">
+      <!-- Replace 'cv.pdf' with your actual PDF file name/link -->
+      <iframe src="JOHN'S VA RESUME.pdf" class="w-full h-full border-none" id="cv-iframe"></iframe>
+      
+      <!-- Fallback message if PDF doesn't load -->
+      <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none opacity-0" id="cv-fallback">
+        <i class="fa-regular fa-file-pdf text-4xl text-ink-muted mb-4"></i>
+        <p class="text-sm text-ink-muted">Preview not available.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ============================================== JS ============================================== -->
 <script>
 /* ---- Clean URL (Remove /index.html) ---- */
@@ -1120,6 +1360,33 @@ if (window.location.pathname.endsWith('/index.html')) {
   const cleanPath = window.location.pathname.replace('index.html', '') + window.location.hash;
   window.history.replaceState(null, '', cleanPath);
 }
+
+/* ---- View CV Modal Logic ---- */
+function openCVModal() {
+  const modal = document.getElementById('cv-modal');
+  modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden'; // Prevent background scrolling
+}
+function closeCVModal() {
+  const modal = document.getElementById('cv-modal');
+  modal.classList.add('hidden');
+  document.body.style.overflow = ''; // Restore scrolling
+}
+function printCV() {
+  const iframe = document.getElementById('cv-iframe');
+  iframe.contentWindow.focus();
+  iframe.contentWindow.print();
+}
+// Close modal on Escape key or clicking outside
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !document.getElementById('cv-modal').classList.contains('hidden')) {
+    closeCVModal();
+  }
+});
+document.getElementById('cv-modal').addEventListener('click', (e) => {
+  if (e.target.id === 'cv-modal') closeCVModal();
+});
+
 
 /* ---- Mobile menu ---- */
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -1193,33 +1460,51 @@ function attachSwipe(track) {
 }
 document.querySelectorAll('[data-swipe]').forEach(attachSwipe);
 
-/* ---- Field Reports Tabs (Fixed Underline logic) ---- */
+/* ---- Field Reports Tabs (Grid logic) ---- */
 const reportTabs = document.querySelectorAll('.report-tab');
 const reportPanels = document.querySelectorAll('.report-panel');
-const tabProgressBar = document.querySelector('[data-progress-for="reports-tabs"]');
 
-if (tabProgressBar && reportTabs.length > 0) {
-  tabProgressBar.style.width = `${100 / reportTabs.length}%`;
-  tabProgressBar.style.transition = 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
-  tabProgressBar.style.transform = 'translateX(0%)';
+// Main function to switch reports
+function setActiveReport(index) {
+  if (index < 0 || index >= reportTabs.length) return;
+  
+  const tab = reportTabs[index];
+  const idx = tab.dataset.report;
+
+  reportTabs.forEach(t => t.setAttribute('aria-selected', 'false'));
+  tab.setAttribute('aria-selected', 'true');
+
+  reportPanels.forEach(p => {
+    p.classList.toggle('hidden', p.dataset.panel !== idx);
+  });
+
+  // Scroll to the top of the reports container so the user sees the new content
+  document.getElementById('reports').scrollIntoView({ behavior: 'smooth' });
 }
 
+// Tab click listeners
 reportTabs.forEach((tab, index) => {
   tab.addEventListener('click', () => {
-    const idx = tab.dataset.report;
-    
-    reportTabs.forEach(t => t.setAttribute('aria-selected', 'false'));
-    tab.setAttribute('aria-selected', 'true');
-    
-    reportPanels.forEach(p => {
-      p.classList.toggle('hidden', p.dataset.panel !== idx);
-    });
+    setActiveReport(index);
+  });
+});
 
-    if (tabProgressBar) {
-      tabProgressBar.style.transform = `translateX(${index * 100}%)`;
+// Prev/Next Button listeners inside the panels
+document.querySelectorAll('.report-nav-prev').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const currentIndex = parseInt(e.currentTarget.dataset.index);
+    if (currentIndex > 0) {
+      setActiveReport(currentIndex - 1);
     }
+  });
+});
 
-    tab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+document.querySelectorAll('.report-nav-next').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const currentIndex = parseInt(e.currentTarget.dataset.index);
+    if (currentIndex < reportTabs.length - 1) {
+      setActiveReport(currentIndex + 1);
+    }
   });
 });
 
